@@ -6,10 +6,16 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 
+/**
+ * Author  : Truman
+ * Contact : truman.t.kim@gmail.com
+ * Version : 1.1.0
+ */
 public class BytesUtil {
 
     private static final ByteOrder DEFAULT_BYTE_ORDER = ByteOrder.BIG_ENDIAN;
     private static final int INTEGER_SIZE = Integer.SIZE/8;
+    private static final int LONG_SIZE = Long.SIZE/8;
     private static final String DEFAULT_HEX_PREFIX = ""; // = "0x";
     private static final String DEFAULT_HEX_DELIMITER = " "; // = "";
     private static final HexCase DEFAULT_HEX_CASE = HexCase.UPPER_CASE;
@@ -121,6 +127,52 @@ public class BytesUtil {
         buff.flip();
 
         return buff.getInt();
+    }
+
+    public static byte[] longToBytes(long longVal) {
+        return longToBytes(longVal, DEFAULT_BYTE_ORDER);
+    }
+
+    public static byte[] longToBytes(long longVal, ByteOrder order) {
+        ByteBuffer buff = ByteBuffer.allocate(LONG_SIZE);
+        buff.order(order);
+        buff.putLong(longVal);
+
+        return buff.array();
+    }
+
+    public static long bytesToLong(byte[] bytes) {
+        return bytesToLong(bytes,DEFAULT_BYTE_ORDER);
+    }
+
+    public static long bytesToLong(byte[] bytes, ByteOrder order) {
+        ByteBuffer buff = ByteBuffer.allocate(LONG_SIZE);
+        buff.order(order);
+        buff.put(bytes);
+        buff.flip();
+
+        return buff.getLong();
+    }
+
+    public static byte[] stripLSB(byte[] bytes, int length) {
+        if (bytes == null || length < 0 || length > bytes.length) {
+            return null;
+        }
+        byte[] ret = new byte[length];
+        System.arraycopy(bytes, 0, ret, 0, length);
+
+        return ret;
+    }
+
+    public static byte[] stripMSB(byte[] bytes, int length) {
+        if (bytes == null || length < 0 || length > bytes.length) {
+            return null;
+        }
+        int srcPos = bytes.length - length;
+        byte[] ret = new byte[length];
+        System.arraycopy(bytes, srcPos, ret, 0, length);
+
+        return ret;
     }
 
     public static boolean compareBytes(byte[] b1, byte[] b2) {
