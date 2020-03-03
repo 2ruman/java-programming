@@ -9,7 +9,7 @@ import java.util.Arrays;
 /**
  * Author  : Truman
  * Contact : truman.t.kim@gmail.com
- * Version : 1.1.0
+ * Version : 1.1.1
  */
 public class BytesUtil {
 
@@ -185,6 +185,16 @@ public class BytesUtil {
         return true;
     }
 
+    public static char[] bytesToChars(byte[] bytes) {
+        if (bytes == null) return null;
+
+        char[] chars = new char[bytes.length];
+        for (int i = 0 ; i < bytes.length ; i++) {
+            chars[i] = (char)bytes[i];
+        }
+        return chars;
+    }
+
     public static boolean validateBytes(byte[] bytes) {
         return (bytes != null && bytes.length > 0);
     }
@@ -208,6 +218,12 @@ public class BytesUtil {
     public static void zeroize(byte[] bytes) {
         if (bytes != null)
             Arrays.fill(bytes, (byte) 0);
+        return;
+    }
+
+    public static void zeroize(char[] chars) {
+        if (chars != null)
+            Arrays.fill(chars, (char) 0);
         return;
     }
 }
