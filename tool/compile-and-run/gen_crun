@@ -1,0 +1,90 @@
+#!/bin/bash
+
+PROG_NAME="gen_crun"
+PROG_VERS="0.1.0"
+
+OUTPUT_NAME="crun.sh"
+OUTPUT_PATH=
+
+OWNER="truman"
+REPO="java"
+SUBJ=
+
+SRC="src"
+SRC_PATH=
+BIN="bin"
+BIN_PATH=
+CLS_PATH=
+MAIN="Main"
+MAIN_FILE="$MAIN.java"
+MAIN_PATH=
+MAIN_CLS=
+
+CURR_PATH=$PWD
+CURR_DIR_NAME=${CURR_PATH##*/}
+
+PROJ_NAME=$1
+PROJ_NAME=${PROJ_NAME%/}
+PROJ_PATH="${CURR_PATH}/${PROJ_NAME}"
+
+OUTPUT_PATH="${PROJ_PATH}/${OUTPUT_NAME}"
+SUBJ=$CURR_DIR_NAME
+
+USAGE="
+Usage:
+
+	[$PROG_NAME]
+
+	Version : $PROG_VERS
+	Usage: $PROG_NAME <project name>
+
+	This program is to generate $OUTPUT_NAME whose name stands for 'compile and run',
+	and it will be done based on a \e[1mCERTAIN PATH RULE\e[0m.
+"
+BODY=
+
+function usage() {
+	echo -e "$USAGE"
+	exit 0
+}
+
+function error() {
+	echo -e "Error: ${1}\n(${PROJ_PATH})"
+	exit 0
+}
+
+function setup() {
+	PROJ_NAME=$(echo $PROJ_NAME | tr '-' '_')
+	CLS_PATH="$OWNER/$REPO/$SUBJ/$PROJ_NAME"
+	SRC_PATH="$PROJ_PATH/$SRC"
+	BIN_PATH="$PROJ_PATH/$BIN"
+	MAIN_PATH="$SRC_PATH/$CLS_PATH/$MAIN_FILE"
+	MAIN_CLS="$OWNER.$REPO.$SUBJ.$PROJ_NAME.$MAIN"
+
+	BODY="#!/bin/bash
+
+#Clean up all the class files
+rm -rf $BIN_PATH
+
+#Compile the main java with all dependencies
+javac -d $BIN_PATH -sourcepath $SRC_PATH $MAIN_PATH
+
+#Run the compiled main class
+java -cp $BIN_PATH $MAIN_CLS
+"
+}
+
+function gen() {
+	[[ ! -d $PROJ_PATH ]] && error "Can't find project directory..."
+
+	setup
+	echo "$BODY" > $OUTPUT_PATH
+	chmod +x $OUTPUT_PATH
+	echo "Done!"
+}
+
+function main() {
+	[[ ! -z "$PROJ_NAME" ]] && gen || usage
+}
+
+main $@
