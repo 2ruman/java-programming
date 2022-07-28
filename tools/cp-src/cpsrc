@@ -1,0 +1,52 @@
+#!/bin/bash
+#
+# Simple script to copy src directory in staging project path to current directory.
+#
+# Author  : Truman Kim (truman.t.kim@gmail.com)
+# Version : 0.1.0
+
+PROJ_PATH=$STAGING_PROJ_PATH
+SRC_PATH="${PROJ_PATH}/src"
+DST_PATH="${PWD}/src"
+FROM=$SRC_PATH
+TO="$PWD"
+
+ERR_MSG_ENV="Staging project path should be set as environment variable beforehand"
+ERR_MSG_SRC="Source directory is not present"
+ERR_MSG_DST="Destination directory must be cleaned first"
+
+function err_exit() {
+	echo "Error: $1"
+	exit 0
+}
+
+function rm_or_exit() {
+	read -p "Destination already exists. Do you want to remove it to continue? (y/n) " ANS
+	[[ $ANS != "y" && $ANS != "Y" ]] && err_exit "$ERR_MSG_DST" || rm -rf $DST_PATH
+	[[ -e $DST_PATH ]] && err_exit "$ERR_MSG_DST"
+}
+
+function path_check() {
+	echo "src: $SRC_PATH"
+	echo "dst: $DST_PATH"
+}
+
+function copy() {
+	cp -a $1 $2
+}
+
+function main() {
+
+	[[ -z $PROJ_PATH ]] && err_exit "$ERR_MSG_ENV" || path_check
+
+	[[ ! -d $SRC_PATH ]] && err_exit "$ERR_MSG_SRC"
+
+	[[ -d $DST_PATH ]] && rm_or_exit "$ERR_MSG_DST"
+
+	copy $SRC_PATH $DST_PATH
+
+	[[ $? -eq 0 ]] && echo "Done!"
+}
+
+main $@
+
