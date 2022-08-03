@@ -1,0 +1,10 @@
+#!/bin/bash
+#
+# Simple script to clean up all bin directories in a subject group.
+#
+# Author  : Truman Kim (truman.t.kim@gmail.com)
+# Version : 0.1.0
+
+find -maxdepth 2 -type d -name "bin" -exec rm -rf {} \;
+
+echo "Done!"
