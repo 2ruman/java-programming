@@ -10,14 +10,21 @@ public class Main {
         return System.getProperty("user.dir");
     }
 
-    // Using NIO APIs
+    // Using NIO APIs-1
     public static String method2() {
         Path currPath = Paths.get("");
         return currPath.toAbsolutePath().toString();
     }
 
+    // Using NIO APIs-2
+    public static String method3() {
+        Path currPath = Paths.get(".");
+        return currPath.toAbsolutePath().normalize().toString();
+    }
+
     public static void main(String[] args) {
         System.out.println("Current Working Directory : " + method1());
         System.out.println("Current Working Directory : " + method2());
+        System.out.println("Current Working Directory : " + method3());
     }
 }
