@@ -5,11 +5,11 @@ package truman.java.util.android_log;
  * This class is for increasing an inter-compatability between normal java codes
  * and android java codes.
  * 
- * @version 0.1.0 
+ * @version 0.1.1
  * @author Truman Kim (truman.t.kim@gmail.com)
  * 
  */
-public class Log {
+public final class Log {
 
     public static void d(Object obj) {
         System.out.println(obj == null ? "null" : obj.toString());
