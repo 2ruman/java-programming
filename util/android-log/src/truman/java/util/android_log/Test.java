@@ -4,11 +4,10 @@ public class Test {
 
     private static final String TAG = "MyService";
 
-    public void test() {
-
+    private void routine() {
         final int val = 10;
 
-        Log.i(TAG, "test() - Inside!");
+        Log.i(TAG, "routine() - Inside!");
         Log.i(null, null);
 
         Log.d(TAG, null);
@@ -19,10 +18,21 @@ public class Test {
             throw new Exception("Catch me!");
         } catch (Exception e) {
             Log.e(TAG, "What did you say? : " + e);
+            Log.printStackTrace(e);
         }
 
        Log.i("This is for normal java code.");
        Log.d("This is for normal java code.");
        Log.e("This is for normal java code.");
+    }
+
+    public void test() {
+        routine();
+        Log.setOutToFile();
+        routine();
+        Log.setOutToFile("my.log");
+        routine();
+        Log.setOutToFile(null);
+        routine();
     }
 }
