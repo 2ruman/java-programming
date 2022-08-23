@@ -13,7 +13,7 @@ import java.util.Locale;
  * This class is for increasing an inter-compatability between normal java codes
  * and android java codes.
  * 
- * @version 0.2.1
+ * @version 0.3.1
  * @author Truman Kim (truman.t.kim@gmail.com)
  * 
  */
@@ -32,6 +32,7 @@ public final class Log {
             "yyyy-MM-dd_HH-mm-ss", Locale.US);
 
     private static volatile boolean toFile;
+    private static String lastFileName;
 
     /**
      * Changing output destination is not multi-thread safe. So you'd better
@@ -58,11 +59,16 @@ public final class Log {
         } else {
             try {
                 fWriter = new PrintWriter(new FileWriter(fileName));
+                lastFileName = fileName;
                 toFile = true;
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static String getOutFileName() {
+        return toFile ? lastFileName : "";
     }
 
     public static void d(String tag, Object obj) {

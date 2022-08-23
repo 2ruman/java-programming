@@ -24,6 +24,7 @@ public class Test {
        Log.i("This is for normal java code.");
        Log.d("This is for normal java code.");
        Log.e("This is for normal java code.");
+       Log.d("Log file name : " + Log.getOutFileName());
     }
 
     public void test() {
