@@ -12,16 +12,17 @@ public final class Console extends AbstractSelection {
             " (1) Add" + LF +
             " (2) Delete" + LF +
             " (3) Show" + LF +
-            " (4) Finish with Saving" + LF +
-            " (5) Finish without Saving" + LF
+            " (4) Load" + LF +
+            " (5) Finish with Saving" + LF +
+            " (6) Finish without Saving" + LF
             ;
     private static final String PROMPT = " : ";
 
-    private final PropGenerator mPropGenerator;
+    private final PropertyManager mPropertyManager;
 
-    public Console(PropGenerator propGenerator) {
+    public Console(PropertyManager propertyManager) {
         super(MENU, PROMPT);
-        mPropGenerator = propGenerator;
+        mPropertyManager = propertyManager;
     }
 
     public void open() {
@@ -31,7 +32,7 @@ public final class Console extends AbstractSelection {
 
     private void onAdd() {
         entitle("I need [ KEY and VALUE ] as a pair");
-        mPropGenerator.add(
+        mPropertyManager.add(
                 getString("Please Enter Key : "),
                 getString("Please Enter Value : ")
                 );
@@ -39,22 +40,30 @@ public final class Console extends AbstractSelection {
 
     private void onDelete() {
         entitle("I need [ KEY ] for deletion");
-        mPropGenerator.delete(
+        mPropertyManager.delete(
                 getString("Please Enter Key : ")
                 );
     }
 
     private void onShow() {
-        mPropGenerator.show();
+        mPropertyManager.show();
+    }
+
+    private void onLoad() {
+        entitle("I need [ FILE NAME ] for loading");
+        mPropertyManager.load(
+                getString("Please Enter File Name : "),
+                getBoolean("Is the file in XML format? [Y/n] ")
+                );
     }
 
     private void onFinish(boolean saving) {
         if (saving) {
             entitle("I need [ FILE NAME ] for saving");
-            mPropGenerator.generate(
+            mPropertyManager.save(
                     getString("Please Enter File Name : "),
                     getString("Any comments? (empty for no comment) "),
-                    getBoolean("Do you want to save in XML form? [Y/n] ")
+                    getBoolean("Do you want to save in XML format? [Y/n] ")
                     );
         }
         escape("Bye bye!");
@@ -80,9 +89,12 @@ public final class Console extends AbstractSelection {
                 onShow();
                 break;
             case 4:
-                onFinish(true);
+                onLoad();
                 break;
             case 5:
+                onFinish(true);
+                break;
+            case 6:
                 onFinish(false);
                 break;
             default:
