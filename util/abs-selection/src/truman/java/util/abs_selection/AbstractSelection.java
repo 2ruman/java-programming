@@ -6,7 +6,7 @@ import java.util.Scanner;
  * This abstract class is to provide convenience to compose a menu that users
  * can select on the screen for the desired function.
  * 
- * @version 0.1.0
+ * @version 0.2.0
  * @author Truman Kim (truman.t.kim@gmail.com)
  */
 public abstract class AbstractSelection {
@@ -26,7 +26,26 @@ public abstract class AbstractSelection {
         mScanner = new Scanner(System.in);
     }
 
-    private int getInt() {
+    protected void entitle(String title) {
+        System.out.println();
+        System.out.println(title);
+    }
+
+    protected boolean getBoolean() {
+        return getBoolean(null);
+    }
+
+    protected boolean getBoolean(String prompt) {
+        if (prompt != null) {
+            System.out.print(prompt);
+        }
+        String val = mScanner.nextLine();
+        return (val.startsWith("Y") || val.startsWith("y"));
+    }
+
+    protected abstract int getDefaultInt();
+
+    protected int getInt() {
         int ret;
         try {
             ret = Integer.parseInt(mScanner.nextLine());
@@ -35,6 +54,19 @@ public abstract class AbstractSelection {
         }
         return ret;
     }
+
+    protected String getString() {
+        return getString(null);
+    }
+
+    protected String getString(String prompt) {
+        if (prompt != null) {
+            System.out.print(prompt);
+        }
+        return mScanner.nextLine();
+    }
+
+    protected abstract void onSelected(int selection);
 
     protected void select() {
         System.out.print(mMenu);
@@ -47,9 +79,6 @@ public abstract class AbstractSelection {
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
-
-    protected abstract int getDefaultInt();
-    protected abstract void onSelected(int selection);
 
     public void loop() {
         mLoop = true;

@@ -13,7 +13,8 @@ public final class Console extends AbstractSelection {
             " (2) Hotdog" + LF +
             " (3) Hamburger" + LF +
             " (4) Coke" + LF +
-            " (5) Finish" + LF
+            " (5) Call a staff " + LF +
+            " (6) Finish" + LF
             ;
 
     private static final String PROMPT = " : "; // Anything cool like " >> "
@@ -50,6 +51,13 @@ public final class Console extends AbstractSelection {
                 System.out.println("Coke selected");
                 break;
             case 5:
+                String wanted = getString("What kind of food do you want? ");
+                boolean answer = getBoolean("Do you need " + wanted + "? [Y/n] ");
+                System.out.println(answer ?
+                        "OK. I'll prepare " + wanted + " for you!"
+                        : "Return to the menu...");
+                break;
+            case 6:
                 escape("Catch you later!");
                 break;
             default:
