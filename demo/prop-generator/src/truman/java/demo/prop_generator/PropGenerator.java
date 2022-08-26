@@ -17,15 +17,15 @@ public final class PropGenerator {
         mProperties.put(key, value);
     }
 
-    protected void delete(String key) {
+    public void delete(String key) {
         mProperties.remove(key);
     }
 
-    protected void show() {
+    public void show() {
         mProperties.list(System.out);
     }
 
-    protected void generate(String fileName, String comments, boolean toXml) {
+    public void generate(String fileName, String comments, boolean toXml) {
 
         if (fileName != null) {
             try (FileOutputStream fos = new FileOutputStream(fileName);

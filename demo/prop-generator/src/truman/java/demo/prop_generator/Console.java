@@ -1,6 +1,6 @@
 package truman.java.demo.prop_generator;
 
-public class Console extends AbstractSelection {
+public final class Console extends AbstractSelection {
 
     private static final String LF = System.lineSeparator();
     private static final String MENU =

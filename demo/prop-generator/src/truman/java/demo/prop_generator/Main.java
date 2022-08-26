@@ -1,10 +1,10 @@
 package truman.java.demo.prop_generator;
 
 /**
- * This abstract class is to provide convenience to compose a menu that users
- * can select on the screen for the desired function.
+ * This program is to provide convenience to generate java-property file based
+ * on java.util.Properties which is Collection-like API.
  * 
- * @version 0.2.0
+ * @version 0.2.1
  * @author Truman Kim (truman.t.kim@gmail.com)
  */
 public class Main {
