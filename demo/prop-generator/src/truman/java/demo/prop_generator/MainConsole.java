@@ -1,6 +1,6 @@
 package truman.java.demo.prop_generator;
 
-public final class Console extends AbstractSelection {
+public final class MainConsole extends AbstractSelection {
 
     private static final String LF = System.lineSeparator();
     private static final String MENU =
@@ -20,7 +20,7 @@ public final class Console extends AbstractSelection {
 
     private final PropertyManager mPropertyManager;
 
-    public Console(PropertyManager propertyManager) {
+    public MainConsole(PropertyManager propertyManager) {
         super(MENU, PROMPT);
         mPropertyManager = propertyManager;
     }
