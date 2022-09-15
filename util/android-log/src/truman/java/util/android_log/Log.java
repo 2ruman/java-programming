@@ -13,7 +13,7 @@ import java.util.Locale;
  * This class is for increasing an inter-compatability between normal java codes
  * and android java codes.
  * 
- * @version 0.3.1
+ * @version 0.4.1
  * @author Truman Kim (truman.t.kim@gmail.com)
  * 
  */
@@ -23,27 +23,48 @@ public final class Log {
     private static PrintStream eStream;
     private static PrintWriter fWriter;
 
+    private static volatile boolean timeStamp;
+    private static volatile boolean toFile;
+    private static volatile String lastFileName;
+
     static {
         dStream = System.out;
         eStream = System.err;
     }
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
-            "yyyy-MM-dd_HH-mm-ss", Locale.US);
+    private static final String TAG_LOG_FORMAT = "%-30s%s";
 
-    private static volatile boolean toFile;
-    private static String lastFileName;
+    private static final SimpleDateFormat LOG_TIME_FORMATTER =
+            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US);
+
+    private static final SimpleDateFormat FILE_TIME_FORMATTER =
+            new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.US);
+
+    private static String getLogTime() {
+        return LOG_TIME_FORMATTER.format(new Date(System.currentTimeMillis()));
+    }
+
+    private static String getFileTime() {
+        return FILE_TIME_FORMATTER.format(new Date(System.currentTimeMillis()));
+    }
 
     /**
-     * Changing output destination is not multi-thread safe. So you'd better
+     * Determine whether to print time stamp or not.
+     * Default, false.
+     */
+    public static void setTimeStamp(boolean yes) {
+        timeStamp = yes;
+    }
+
+    /**
+     * Changing the output destination is not multi-thread safe. So you'd better
      * determine where to print logs at the very beginning of your program.
      * 
      * This method will create new file named based on current time, and
      * coming log after this will be printed into that file.
      */
     public static void setOutToFile() {
-        String time = DATE_FORMAT.format(new Date(System.currentTimeMillis()));
-        String fileName = "log_" + time + ".txt";
+        String fileName = "log_" + getFileTime() + ".txt";
         setOutToFile(fileName);
     }
 
@@ -72,7 +93,7 @@ public final class Log {
     }
 
     public static void d(String tag, Object obj) {
-        d(String.format("%-20s %s",
+        d(String.format(TAG_LOG_FORMAT,
                 (tag == null ? "null" : tag),
                 (obj == null ? "null" : obj.toString())));
     }
@@ -82,11 +103,7 @@ public final class Log {
     }
 
     private static void d(String m) {
-        if (toFile) {
-            fWriter.println(m);
-        } else {
-            dStream.println(m);
-        }
+        print(m, true);
     }
 
     public static void i(String tag, Object obj) {
@@ -98,7 +115,7 @@ public final class Log {
     }
 
     public static void e(String tag, Object obj) {
-        e(String.format("%-20s %s",
+        e(String.format(TAG_LOG_FORMAT,
                 (tag == null ? "null" : tag),
                 (obj == null ? "null" : obj.toString())));
     }
@@ -108,8 +125,33 @@ public final class Log {
     }
 
     private static void e(String m) {
+        print(m, false);
+    }
+
+    public static void e(Exception e) {
+        if (e == null) return;
+        e(e.toString());
+        for (StackTraceElement stack : e.getStackTrace()) {
+            e("\tat " + stack);
+        }
+    }
+
+    public static void e(String tag, Exception e) {
+        if (e == null) return;
+        e(tag, e.toString());
+        for (StackTraceElement stack : e.getStackTrace()) {
+            e(tag, "\tat " + stack);
+        }
+    }
+
+    private static void print(String m, boolean debugOrError) {
+        if (timeStamp) {
+            m = String.format(TAG_LOG_FORMAT, getLogTime(), m);
+        }
         if (toFile) {
             fWriter.println(m);
+        } else if (debugOrError) {
+            dStream.println(m);
         } else {
             eStream.println(m);
         }
