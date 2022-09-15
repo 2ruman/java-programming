@@ -13,7 +13,7 @@ import java.util.Locale;
  * This class is for increasing an inter-compatability between normal java codes
  * and android java codes.
  * 
- * @version 0.4.1
+ * @version 0.5.1
  * @author Truman Kim (truman.t.kim@gmail.com)
  * 
  */
@@ -23,8 +23,11 @@ public final class Log {
     private static PrintStream eStream;
     private static PrintWriter fWriter;
 
+    private static final Object LOG_LOCK = new Object();
+
     private static volatile boolean timeStamp;
     private static volatile boolean toFile;
+    private static volatile boolean noTag;
     private static volatile String lastFileName;
 
     static {
@@ -48,12 +51,24 @@ public final class Log {
         return FILE_TIME_FORMATTER.format(new Date(System.currentTimeMillis()));
     }
 
+    public static Object getLock() {
+        return LOG_LOCK;
+    }
+
     /**
      * Determine whether to print time stamp or not.
      * Default, false.
      */
     public static void setTimeStamp(boolean yes) {
         timeStamp = yes;
+    }
+
+    /**
+     * Determine whether to abandon the given tag forcibly.
+     * Default, false.
+     */
+    public static void setNoTag(boolean forced) {
+        noTag = forced;
     }
 
     /**
@@ -93,7 +108,8 @@ public final class Log {
     }
 
     public static void d(String tag, Object obj) {
-        d(String.format(TAG_LOG_FORMAT,
+        if (noTag) d(obj);
+        else d(String.format(TAG_LOG_FORMAT,
                 (tag == null ? "null" : tag),
                 (obj == null ? "null" : obj.toString())));
     }
@@ -115,7 +131,8 @@ public final class Log {
     }
 
     public static void e(String tag, Object obj) {
-        e(String.format(TAG_LOG_FORMAT,
+        if (noTag) e(obj);
+        else e(String.format(TAG_LOG_FORMAT,
                 (tag == null ? "null" : tag),
                 (obj == null ? "null" : obj.toString())));
     }
