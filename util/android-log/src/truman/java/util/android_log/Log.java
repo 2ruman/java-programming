@@ -13,7 +13,7 @@ import java.util.Locale;
  * This class is for increasing an inter-compatability between normal java codes
  * and android java codes.
  * 
- * @version 0.5.1
+ * @version 0.5.2
  * @author Truman Kim (truman.t.kim@gmail.com)
  * 
  */
@@ -167,6 +167,7 @@ public final class Log {
         }
         if (toFile) {
             fWriter.println(m);
+            fWriter.flush();
         } else if (debugOrError) {
             dStream.println(m);
         } else {
