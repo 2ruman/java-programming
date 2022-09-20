@@ -13,7 +13,7 @@ import java.util.Locale;
  * This class is for increasing an inter-compatability between normal java codes
  * and android java codes.
  * 
- * @version 0.5.2
+ * @version 0.5.3
  * @author Truman Kim (truman.t.kim@gmail.com)
  * 
  */
@@ -146,37 +146,49 @@ public final class Log {
     }
 
     public static void e(Exception e) {
-        if (e == null) return;
-        e(e.toString());
-        for (StackTraceElement stack : e.getStackTrace()) {
-            e("\tat " + stack);
+        if (e == null) {
+            return;
+        }
+        synchronized (LOG_LOCK) {
+            e(e.toString());
+            for (StackTraceElement stack : e.getStackTrace()) {
+                e("\tat " + stack);
+            }
         }
     }
 
     public static void e(String tag, Exception e) {
-        if (e == null) return;
-        e(tag, e.toString());
-        for (StackTraceElement stack : e.getStackTrace()) {
-            e(tag, "\tat " + stack);
+        if (e == null) {
+            return;
+        }
+        synchronized (LOG_LOCK) {
+            e(tag, e.toString());
+            for (StackTraceElement stack : e.getStackTrace()) {
+                e(tag, "\tat " + stack);
+            }
         }
     }
 
     private static void print(String m, boolean debugOrError) {
-        if (timeStamp) {
-            m = String.format(TAG_LOG_FORMAT, getLogTime(), m);
-        }
-        if (toFile) {
-            fWriter.println(m);
-            fWriter.flush();
-        } else if (debugOrError) {
-            dStream.println(m);
-        } else {
-            eStream.println(m);
+        synchronized (LOG_LOCK) {
+            if (timeStamp) {
+                m = String.format(TAG_LOG_FORMAT, getLogTime(), m);
+            }
+            if (toFile) {
+                fWriter.println(m);
+                fWriter.flush();
+            } else if (debugOrError) {
+                dStream.println(m);
+            } else {
+                eStream.println(m);
+            }
         }
     }
 
     public static void printStackTrace(Exception e) {
-        if (e == null) return;
+        if (e == null) {
+            return;
+        }
         if (toFile) {
             e.printStackTrace(fWriter);
         } else {
