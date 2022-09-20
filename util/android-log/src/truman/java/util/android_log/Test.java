@@ -93,11 +93,12 @@ public class Test {
     }
 
     /**
-     * Multi-threading Testing
+     * Multi-threading Testing + ThreadName Testing
      */
     public Test test_3() {
         Log.setTimeStamp(false);
         Log.setNoTag(false);
+        Log.setThreadName(true);
 
         Thread t1 = new LoggingThread(1);
         Thread t2 = new LoggingThread(2);
@@ -105,10 +106,10 @@ public class Test {
         Thread t4 = new LoggingThread(4);
 
         try {
-            Log.d("==================== Ordered output ====================");
+            Log.d("  [ Thread Name ]", "==================== Ordered output ====================");
             t1.start(); t2.start();
             t1.join(); t2.join();
-            Log.d("==================== Jumbled output ====================");
+            Log.d("  [ Thread Name ]", "==================== Jumbled output ====================");
             t3.start(); t4.start();
             t1.join(); t2.join();
         } catch (InterruptedException e) {}
@@ -117,19 +118,18 @@ public class Test {
     }
 
     private class LoggingThread extends Thread {
-        int id;
         int repeat = 10;
         Object lock;
 
         LoggingThread(int id) {
-            this.id = id;
+            setName("Thread - " + id);
             lock = (id < 3) ? Log.getLock() : new Object();
         }
 
         public void run() {
             synchronized (lock) {
                 while (repeat-- > 0) {
-                    Log.d("LoggingThread - " + id, "Hello!!!");
+                    Log.d("Hello!!!");
                     try {
                         sleep(100);
                     } catch (InterruptedException e) {}

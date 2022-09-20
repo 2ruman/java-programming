@@ -13,7 +13,7 @@ import java.util.Locale;
  * This class is for increasing an inter-compatability between normal java codes
  * and android java codes.
  * 
- * @version 0.5.3
+ * @version 0.6.3
  * @author Truman Kim (truman.t.kim@gmail.com)
  * 
  */
@@ -28,6 +28,7 @@ public final class Log {
     private static volatile boolean timeStamp;
     private static volatile boolean toFile;
     private static volatile boolean noTag;
+    private static volatile boolean threadName;
     private static volatile String lastFileName;
 
     static {
@@ -35,7 +36,9 @@ public final class Log {
         eStream = System.err;
     }
 
-    private static final String TAG_LOG_FORMAT = "%-30s%s";
+    private static final String TIME_LOG_FORMAT = "%-30s%s";
+
+    private static final String TAG_LOG_FORMAT = "%-20s%s";
 
     private static final SimpleDateFormat LOG_TIME_FORMATTER =
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US);
@@ -69,6 +72,14 @@ public final class Log {
      */
     public static void setNoTag(boolean forced) {
         noTag = forced;
+    }
+
+    /**
+     * Determine whether to attach the calling thread's name to the tag field
+     * Default, false.
+     */
+    public static void setThreadName(boolean yes) {
+        threadName = yes;
     }
 
     /**
@@ -115,7 +126,12 @@ public final class Log {
     }
 
     public static void d(Object obj) {
-        d(obj == null ? "null" : obj.toString());
+        String m = obj == null ? "null" : obj.toString();
+        if (threadName) {
+            d(Thread.currentThread().getName(), m);
+        } else {
+            d(m);
+        }
     }
 
     private static void d(String m) {
@@ -138,7 +154,12 @@ public final class Log {
     }
 
     public static void e(Object obj) {
-        e(obj == null ? "null" : obj.toString());
+        String m = obj == null ? "null" : obj.toString();
+        if (threadName) {
+            e(Thread.currentThread().getName(), m);
+        } else {
+            e(m);
+        }
     }
 
     private static void e(String m) {
@@ -147,6 +168,10 @@ public final class Log {
 
     public static void e(Exception e) {
         if (e == null) {
+            return;
+        }
+        if (threadName) {
+            e(Thread.currentThread().getName(), e);
             return;
         }
         synchronized (LOG_LOCK) {
@@ -172,7 +197,7 @@ public final class Log {
     private static void print(String m, boolean debugOrError) {
         synchronized (LOG_LOCK) {
             if (timeStamp) {
-                m = String.format(TAG_LOG_FORMAT, getLogTime(), m);
+                m = String.format(TIME_LOG_FORMAT, getLogTime(), m);
             }
             if (toFile) {
                 fWriter.println(m);
