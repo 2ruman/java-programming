@@ -14,7 +14,7 @@ import java.util.List;
 * while maintaining stand-alone input line, and this class provides convenience
 * when you need to read an input immediately.
 *
-* @version 0.1.0
+* @version 0.1.1
 * @author Truman Kim (truman.t.kim@gmail.com)
 *
 */

@@ -23,7 +23,7 @@ public class Test {
     public Test test_1() {
         Out.println();
         Out.println("[ How-to ]");
-        Out.println(" - Type anything for 5 times!");
+        Out.println(" - Type any sentence for 5 times!");
         Out.println();
         disturber.setDaemon(true);
         disturber.start();
@@ -33,14 +33,16 @@ public class Test {
             Out.println("#" + i + " : " + s);
         }
         disturber.interrupt();
+        Out.println();
+        Out.println("Bye bye!");
         return this;
     }
 
     public Test test_2() {
         Out.println();
         Out.println("[ How-to ]");
-        Out.println(" - [K] for Up, [J] for Down, [H] for Left, [L] for Right");
-        Out.println(" - [ESC] for termination...");
+        Out.println(" - Press [K] for Up, [J] for Down, [H] for Left, [L] for Right");
+        Out.println(" - Press [ESC] for termination...");
         Out.println();
         char c;
         while (true) {
@@ -57,5 +59,38 @@ public class Test {
                     }
             }
         }
+    }
+
+    public Test test_3() {
+        Out.println();
+        Out.println("[ How-to ]");
+        Out.println(" - Press any of [Home], [End], [Insert], [Del], "
+                + "[PageUp], [PageDown] and the arrow keys");
+        Out.println(" - Press [Enter] for termination");
+        Out.println();
+
+        char c;
+        SpecialKeySequence sks = null;
+        while (true) {
+            c = Out.getCh();
+            if (sks != null) {
+                sks.setCh(c);
+                if (SpecialKeySequence.isKnown(sks)) {
+                    SpecialKeySequence known = SpecialKeySequence.which(sks, null);
+                    Out.println("[" + known.getAlias() + "]");
+                    sks = null;
+                } else if (sks.isFull()) {
+                    sks = null;
+                }
+            } else if (c == 27) {
+                sks = new SpecialKeySequence();
+            } else if (HotConsole.isPrintable(c)) {
+                Out.println("[" + c + "]");
+            } else if (HotConsole.isEnter(c)) {
+                Out.println("Bye bye!");
+                break;
+            }
+        }
+        return this;
     }
 }
