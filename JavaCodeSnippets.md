@@ -1,8 +1,8 @@
 # Java Code Snippets
 
 ### Contents
-+ Parsing
-+ File
++ [Parsing](#parsing)
++ [File](#file)
 <br>
 
 ## Parsing
