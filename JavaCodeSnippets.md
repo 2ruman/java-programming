@@ -3,6 +3,7 @@
 ### Contents
 + [Parsing](#parsing)
 + [File](#file)
++ [Process](#process)
 <br>
 
 ## Parsing
@@ -17,6 +18,24 @@ public static String getExtension(String fileName) {
 ```
 
 ## File
+
+### Read One Line from a File
+
+```java
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+public static String readOneLine(String filePath) {
+    String ret = "";
+    try (FileReader fr = new FileReader(filePath);
+            BufferedReader br = new BufferedReader(fr)) {
+        ret = br.readLine();
+    } catch (IOException e) {
+    }
+    return (ret != null) ? ret : "";
+}
+```
 
 ### Get inode Number in Unix-like Environment
 
@@ -39,4 +58,12 @@ public static long getIno(String filePath) {
     }
     return ret;
 }
+```
+
+## Process
+
+### Get PID
+
+```java
+long pid = ProcessHandle.current().pid();
 ```
