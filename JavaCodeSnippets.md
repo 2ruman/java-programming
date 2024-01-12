@@ -4,6 +4,7 @@
 + [Parsing](#parsing)
 + [File](#file)
 + [Process](#process)
++ [Lambda](#lambda)
 <br>
 
 ## Parsing
@@ -66,4 +67,24 @@ public static long getIno(String filePath) {
 
 ```java
 long pid = ProcessHandle.current().pid();
+```
+
+## Lambda
+
+### Combine Filters
+
+```java
+import java.util.function.Predicate;
+
+/*
+ * Nullable left-side hand and non-nullable right-side hand
+ */
+public static <T> Predicate<T> andFilters(Predicate<T> left, Predicate<T> right) {
+    return (left == null) ? right : left.and(right);
+}
+
+public static <T> Predicate<T> orFilters(Predicate<T> left, Predicate<T> right) {
+    return (left == null) ? right : left.or(right);
+}
+
 ```
