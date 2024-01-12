@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PROG_NAME="gen_crun"
-PROG_VERS="0.1.0"
+PROG_VERS="0.2.0"
 
 OUTPUT_NAME="crun.sh"
 OUTPUT_PATH=
@@ -61,16 +61,20 @@ function setup() {
 	MAIN_PATH="$SRC_PATH/$CLS_PATH/$MAIN_FILE"
 	MAIN_CLS="$OWNER.$REPO.$SUBJ.$PROJ_NAME.$MAIN"
 
+	REL_BIN_PATH=$(realpath --relative-to=$PROJ_PATH $BIN_PATH)
+	REL_SRC_PATH=$(realpath --relative-to=$PROJ_PATH $SRC_PATH)
+	REL_MAIN_PATH=$(realpath --relative-to=$PROJ_PATH $MAIN_PATH)
+
 	BODY="#!/bin/bash
 
 #Clean up all the class files
-rm -rf $BIN_PATH
+rm -rf $REL_BIN_PATH
 
 #Compile the main java with all dependencies
-javac -d $BIN_PATH -sourcepath $SRC_PATH $MAIN_PATH
+javac -d $REL_BIN_PATH -sourcepath $REL_SRC_PATH $REL_MAIN_PATH
 
 #Run the compiled main class
-java -cp $BIN_PATH $MAIN_CLS
+java -cp $REL_BIN_PATH $MAIN_CLS
 "
 }
 
