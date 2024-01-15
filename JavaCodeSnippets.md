@@ -31,7 +31,15 @@ private static <K, V> K getKeyByValue(Map<K, V> map, Object value) {
 
 ## String / Parsing
 
-### Get File Extension
+### Return Null-safe String
+
+```java
+public static String nullSafe(String s) {
+    return s != null ? s : "";
+}
+```
+
+### Parse File Extension
    
 ```java
 public static String getExtension(String fileName) {
