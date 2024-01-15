@@ -1,11 +1,33 @@
 # Java Code Snippets
 
 ### Contents
-+ [Parsing](#parsing)
++ [Collection](#collection)
++ [String/Parsing](#string/parsing)
 + [File](#file)
 + [Process](#process)
 + [Lambda](#lambda)
 <br>
+
+## Collection
+
+### Get Key by Value in Map
+
+```java
+import java.util.Map;
+
+/*
+ * The map should be immutable and not include null value as a dictionary
+ */
+private static <K, V> K getKeyByValue(Map<K, V> map, Object value) {
+    for (var entry : map.entrySet()) {
+        if (entry.getValue().equals(value)) {
+            return entry.getKey();
+        }
+    }
+    return null;
+}
+
+```
 
 ## Parsing
 
