@@ -2,7 +2,7 @@
 
 ### Contents
 + [Collection](#collection)
-+ [String/Parsing](#string/parsing)
++ [String/Parsing](#string-parsing)
 + [File](#file)
 + [Process](#process)
 + [Lambda](#lambda)
@@ -29,7 +29,7 @@ private static <K, V> K getKeyByValue(Map<K, V> map, Object value) {
 
 ```
 
-## String / Parsing
+## String Parsing
 
 ### Get File Extension
    
