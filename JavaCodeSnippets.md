@@ -29,7 +29,7 @@ private static <K, V> K getKeyByValue(Map<K, V> map, Object value) {
 
 ```
 
-## Parsing
+## String / Parsing
 
 ### Get File Extension
    
