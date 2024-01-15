@@ -2,7 +2,7 @@
 
 ### Contents
 + [Collection](#collection)
-+ [String/Parsing](#string-%2F-parsing)
++ [String/Parsing](#string-/-parsing)
 + [File](#file)
 + [Process](#process)
 + [Lambda](#lambda)
