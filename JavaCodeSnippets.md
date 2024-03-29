@@ -29,6 +29,34 @@ private static <K, V> K getKeyByValue(Map<K, V> map, Object value) {
 
 ```
 
+### LRU Set(Cache)
+
+```java
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+...
+private static final int MAX_CACHE_SIZE = 5;
+...
+    private Set<String> lruCache= Collections.newSetFromMap(new LinkedHashMap<String, Boolean>() {
+        private static final long serialVersionUID = 1L; // Default id for suppressing a warning
+
+        protected boolean removeEldestEntry(Map.Entry<String, Boolean> eldest) {
+            return (size() > MAX_CACHE_SIZE);
+        }
+    });
+...
+        lruCache.add("1");
+        lruCache.add("2");
+        lruCache.add("3");
+        lruCache.add("4");
+        lruCache.add("5");
+        lruCache.add("6");
+
+        System.out.println("LRU Cache : " + lruCache); // Result --> lru : [2, 3, 4, 5, 6]
+```
+
 ## String / Parsing
 
 ### Return Null-safe String
