@@ -76,6 +76,46 @@ public static String getExtension(String fileName) {
 }
 ```
 
+### Get Nth Record from String
+
+```java
+import java.util.StringTokenizer;
+
+(...)
+
+public static String getNthToken(String str, String del, int n) {
+    String ret = "";
+    if (str != null && del != null) {
+        StringTokenizer tokenizer = new StringTokenizer(str, del);
+        while (n > 0 && tokenizer.hasMoreTokens()) {
+            ret = tokenizer.nextToken();
+            n--;
+        }
+    }
+    return (n == 0) ? ret : "";
+}
+
+public static String getNthToken(String str, String del, int n) {
+    if (str == null || del == null || n < 1) {
+        throw new IllegalArgumentException();
+    }
+    String ret = "";
+    StringTokenizer tokenizer = new StringTokenizer(str, del);
+    while (n > 0 && tokenizer.hasMoreTokens()) {
+        ret = tokenizer.nextToken();
+        n--;
+    }
+    return (n == 0) ? ret : "";
+}
+
+(...)
+
+String str = "4.19.36";
+String major = getNthToken(str, ".", 1);
+String minor = getNthToken(str, ".", 2);
+String revision = getNthToken(str, ".", 3);
+```
+
 ## File
 
 ### Read One Line from a File
