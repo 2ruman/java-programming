@@ -16,6 +16,8 @@
 ```java
 /* Most simple */
 String methodName = new Object() { }.getClass().getEnclosingMethod().getName();
+String methodName = new Throwable().getStackTrace()[0].getMethodName();
+String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
 
 /* Considering the depth */
 public static String getCallingMethodName() {
