@@ -14,7 +14,23 @@
 ### Get Current Method Name
 
 ```java
+/* Most simple */
 String methodName = new Object() { }.getClass().getEnclosingMethod().getName();
+
+/* Considering the depth */
+public static String getCallingMethodName() {
+    return getStackedMethodNameSafe(2);
+}
+
+public static String getStackedMethodNameSafe(int n) {
+    StackTraceElement[] e = new Throwable().getStackTrace();
+    return (n >= 0 && n < e.length) ? e[n].getMethodName() : "";
+}
+
+/* For a function object like the lambda-expressed one */
+public static String getMethodNameInFo() {
+    return getStackedMethodNameSafe(4);
+}
 ```
 
 ## Collection
