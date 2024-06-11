@@ -1,12 +1,21 @@
 # Java Code Snippets
 
 ### Contents
++ [Basics](#basics)
 + [Collection](#collection)
 + [String/Parsing](#string--parsing)
 + [File](#file)
 + [Process](#process)
 + [Lambda](#lambda)
 <br>
+
+## Basics
+
+### Get Current Method Name
+
+```java
+String methodName = new Object() { }.getClass().getEnclosingMethod().getName();
+```
 
 ## Collection
 
