@@ -22,7 +22,7 @@ public class Main {
     private Predicate<MyData> andFiltersByFlags(int flags) {
         Predicate<MyData> ret = null;
         if ((flags & 0x01) > 0) {
-            ret = andFilters(ret, (d) -> (d.data1 >= 10)); 
+            ret = andFilters(ret, (d) -> (d.data1 >= 10));
         }
         if ((flags & 0x02) > 0) {
             ret = andFilters(ret, (d) -> (d.data2 >= 11));
