@@ -19,7 +19,7 @@ public class MyTest {
     })
     void testEnumListConversion(@ConvertWith(MyEnumListConverter.class) List<MyEnum> sequence, int expected) {
         for (MyEnum e : sequence) {
-            System.out.println(String.format("%s(%d)", e.name(), e.getCode()));
+            System.out.println(String.format("MyEnum.%s(%d)", e.name(), e.getCode()));
         }
         int firstCode = sequence.stream().findFirst().map(MyEnum::getCode).orElse(-1);
         assertEquals(expected, firstCode);
