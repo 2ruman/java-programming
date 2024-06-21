@@ -5,10 +5,24 @@ import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.List;
+import java.util.StringJoiner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MyTest {
+
+    @ParameterizedTest
+    @CsvSource({
+            "'1, 2, 3, 4, 5, 6, 7, 8, 9, 10', '[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]'",
+            "'5, 4, 3, 2, 1, 0, -1, -2, -3, -4', '[5, 4, 3, 2, 1, 0, -1, -2, -3, -4]'",
+    })
+    void testIntArrayConversion(@ConvertWith(IntArrayConverter.class) int[] sequence, String expected) {
+        StringJoiner sj = new StringJoiner(", ", "[", "]");
+        for (int i : sequence) {
+            sj.add(i + "");
+        }
+        assertEquals(expected, sj.toString());
+    }
 
     @ParameterizedTest
     @CsvSource({
