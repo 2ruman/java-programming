@@ -41,13 +41,14 @@ public class MyTest {
 
     @ParameterizedTest
     @CsvSource({
-            "'Hello|,| world|!'",
-            "A|B|CD|E|FG",
+            "'   Hello|,| world|!   ', '{   Hello, world!   }'",
+            "A |B|  CD | E|  FG, {A B  CD  E  FG}",
     })
-    void testStringArrayConversion(@ConvertWith(MyStringArrayConverter.class) String[] sequence) {
-        for (String e : sequence) {
-            System.out.print(e);
+    void testStringArrayConversion(@ConvertWith(StringArrayConverter.class) String[] sequence, String expected) {
+        StringJoiner sj = new StringJoiner("", "{", "}");
+        for (String s : sequence) {
+            sj.add(s);
         }
-        System.out.println();
+        assertEquals(expected, sj.toString());
     }
 }
