@@ -26,6 +26,19 @@ public class MyTest {
 
     @ParameterizedTest
     @CsvSource({
+            "'1, 2, 3, 4, 5, 6, 7, 8, 9, 10', '[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]'",
+            "'5, 4, 3, 2, 1, 0, -1, -2, -3, -4', '[5, 4, 3, 2, 1, 0, -1, -2, -3, -4]'",
+    })
+    void testIntArrayConversion(@ConvertWith(IntegerListConverter.class) List<Integer> sequence, String expected) {
+        StringJoiner sj = new StringJoiner(", ", "[", "]");
+        for (int i : sequence) {
+            sj.add(i + "");
+        }
+        assertEquals(expected, sj.toString());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
             "A|B|C|D|E|F, 1",
             "B|C|D|E|F, 2",
             "C|D|E|F, 3",
