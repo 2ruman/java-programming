@@ -57,7 +57,7 @@ public class MyTest {
             "'   Hello|,| world|!   ', '{   Hello, world!   }'",
             "A |B|  CD | E|  FG, {A B  CD  E  FG}",
     })
-    void testStringArrayConversion(@ConvertWith(StringArrayConverter.class) String[] sequence, String expected) {
+    void testStringArrayConversion(@ConvertWith(SentenceArrayConverter.class) String[] sequence, String expected) {
         StringJoiner sj = new StringJoiner("", "{", "}");
         for (String s : sequence) {
             sj.add(s);

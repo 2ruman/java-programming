@@ -3,7 +3,7 @@ package truman.java.example.junit.csvsourceconverter;
 import org.junit.jupiter.params.converter.ArgumentConversionException;
 import org.junit.jupiter.params.converter.SimpleArgumentConverter;
 
-public class StringArrayConverter extends SimpleArgumentConverter {
+public class StringArrayByPipeConverter extends SimpleArgumentConverter {
 
     public static final String DELIMITER = "|";
 
