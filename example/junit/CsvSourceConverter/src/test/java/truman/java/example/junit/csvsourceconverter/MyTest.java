@@ -64,4 +64,17 @@ public class MyTest {
         }
         assertEquals(expected, sj.toString());
     }
+
+    @ParameterizedTest
+    @CsvSource({
+            "'A, B, C, D', '{A,B,C,D}'",
+            "'123,456,789', '{123,456,789}'",
+    })
+    void testStringArrayConversionByComma(@ConvertWith(WordArrayConverter.class) String[] sequence, String expected) {
+        StringJoiner sj = new StringJoiner(",", "{", "}");
+        for (String s : sequence) {
+            sj.add(s);
+        }
+        assertEquals(expected, sj.toString());
+    }
 }
