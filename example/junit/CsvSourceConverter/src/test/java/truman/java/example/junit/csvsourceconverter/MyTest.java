@@ -39,6 +39,15 @@ public class MyTest {
 
     @ParameterizedTest
     @CsvSource({
+          "A, 1, B, 2, C, 3, D, 4"
+    })
+    void testEnumConversion(@ConvertWith(MyEnumConverter.class) MyEnum e, int expected) {
+        System.out.println(String.format("MyEnum.%s(%d)", e.name(), e.getCode()));
+        assertEquals(expected, e.getCode());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
             "A|B|C|D|E|F, 1",
             "B|C|D|E|F, 2",
             "C|D|E|F, 3",
