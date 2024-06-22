@@ -91,6 +91,9 @@ public static int getPreviousVal(Set<Integer> orderedSet, int val, int defaultVa
     if (!(orderedSet instanceof TreeSet)) {
         throw new IllegalArgumentException("Argument not assignable to TreeSet");
     }
+    if (orderedSet.isEmpty()) {
+        return defaultVal;
+    }
     TreeSet<Integer> navigableSet = (TreeSet<Integer>) orderedSet;
     Integer previousOne = navigableSet.lower(val);
     if (previousOne == null) {
