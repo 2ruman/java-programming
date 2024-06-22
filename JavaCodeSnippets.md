@@ -128,6 +128,9 @@ public static int getNextVal(Set<Integer> orderedSet, int val, int defaultVal) {
     if (!(orderedSet instanceof TreeSet)) {
         throw new IllegalArgumentException("Argument not assignable to TreeSet");
     }
+    if (orderedSet.isEmpty()) {
+        return defaultVal;
+    }
     TreeSet<Integer> navigableSet = (TreeSet<Integer>) orderedSet;
     Integer nextOne = navigableSet.higher(val);
     if (nextOne == null) {
