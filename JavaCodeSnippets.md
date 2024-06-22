@@ -93,6 +93,30 @@ public static String nullSafe(String s) {
     return s != null ? s : "";
 }
 ```
+### String to Int Array / String to Integer List
+
+```java
+/* To int array with simplest input sequence */
+String intSequence = "1,2,3,4,5,6,7,8,9,0";
+int[] intArray = Arrays.stream(intSequence.split(","))
+        .mapToInt(Integer::parseInt)
+        .toArray();
+
+/* To int array with whitespace-mixed input sequence */
+String intSequence = "  1 , 2 , 3, 4 , 5  , 6, 7    , 8,9,0  ";
+int[] intArray = Arrays.stream(intSequence.trim().split("\\s*,\\s*"))
+        .mapToInt(Integer::parseInt)
+        .toArray();
+
+System.out.println(Arrays.toString(intArray));
+
+/* To integer list with whitespace-mixed input sequence */
+String intSequence = "  1 , 2 , 3, 4 , 5  , 6, 7    , 8,9,0  ";
+List<Integer> intList = Arrays.stream(intSequence.trim().split("\\s*,\\s*"))
+        .map(Integer::parseInt).collect(Collectors.toList());
+
+System.out.println(intList);
+```
 
 ### Parse File Extension
    
