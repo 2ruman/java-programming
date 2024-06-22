@@ -118,6 +118,40 @@ void testTraverseBackwards() {
     }
 }
 ```
+### Traverse Forwards through TreeSet
+
+```java
+public static int getNextVal(Set<Integer> orderedSet, int val, int defaultVal) {
+    if (!(orderedSet instanceof TreeSet)) {
+        throw new IllegalArgumentException("Argument not assignable to TreeSet");
+    }
+    TreeSet<Integer> navigableSet = (TreeSet<Integer>) orderedSet;
+    Integer nextOne = navigableSet.higher(val);
+    if (nextOne == null) {
+        nextOne = navigableSet.first();
+    }
+    if (nextOne == null) {
+        nextOne = defaultVal;
+    }
+    return nextOne;
+}
+
+void traverseForwards() {
+    TreeSet<Integer> treeSet = new TreeSet<>();
+    treeSet.add(10);
+    treeSet.add(7);
+    treeSet.add(5);
+    treeSet.add(3);
+    treeSet.add(2);
+    treeSet.add(1);
+
+    for (int val = 5, i = 0; i < treeSet.size(); i++) {
+        System.out.println(
+                (val = getNextVal(treeSet, val, -1))
+        );
+    }
+}
+```
 
 ## String / Parsing
 
