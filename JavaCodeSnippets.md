@@ -84,6 +84,41 @@ private static final int MAX_CACHE_SIZE = 5;
         System.out.println("LRU Cache : " + lruCache); // Result --> lru : [2, 3, 4, 5, 6]
 ```
 
+### Traverse Backwards through TreeSet
+
+```java
+public static int getPreviousVal(Set<Integer> orderedSet, int val, int defaultVal) {
+    if (!(orderedSet instanceof TreeSet)) {
+        throw new IllegalArgumentException("Argument not assignable to TreeSet");
+    }
+    TreeSet<Integer> navigableSet = (TreeSet<Integer>) orderedSet;
+    Integer previousOne = navigableSet.lower(val);
+    if (previousOne == null) {
+        previousOne = navigableSet.last();
+    }
+    if (previousOne == null) {
+        previousOne = defaultVal;
+    }
+    return previousOne;
+}
+
+void testTraverseBackwards() {
+    TreeSet<Integer> treeSet = new TreeSet<>();
+    treeSet.add(10);
+    treeSet.add(7);
+    treeSet.add(5);
+    treeSet.add(3);
+    treeSet.add(2);
+    treeSet.add(1);
+
+    for (int val = 5, i = 0; i < treeSet.size(); i++) {
+        System.out.println(
+                (val = getPreviousVal(treeSet, val, -1))
+        );
+    }
+}
+```
+
 ## String / Parsing
 
 ### Return Null-safe String
