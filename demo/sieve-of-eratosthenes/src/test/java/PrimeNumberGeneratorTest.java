@@ -33,4 +33,14 @@ public class PrimeNumberGeneratorTest {
         assertFalse(PrimeNumberGenerator.isPrimeNumber(50));
         assertFalse(PrimeNumberGenerator.isPrimeNumber(100));
     }
+
+    @ParameterizedTest
+    @CsvSource({
+            "15 , '[2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]'"
+    })
+    void testPrimeNumberGeneratorGenerateAsMuchAs(int targetNum, String expected) {
+        int[] primes = PrimeNumberGenerator.generateAsMuchAs(targetNum);
+        String actual = Arrays.toString(primes);
+        assertEquals(expected, actual);
+    }
 }

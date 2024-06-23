@@ -29,6 +29,20 @@ public class PrimeNumberGenerator {
         return Arrays.stream(sieve).filter(value -> value > 1);
     }
 
+    public static int[] generateAsMuchAs(int count) {
+        if (count < 1) {
+            throw new IllegalArgumentException("Count must be at least 1");
+        }
+        int[] primes = new int[count];
+        primes[0] = 2;
+        for (int number = primes[0] + 1, i = 1; i < count; number++) {
+            if (isPrimeNumber(number)) {
+                primes[i++] = number;
+            }
+        }
+        return primes;
+    }
+
     public static boolean isPrimeNumber(int number) {
         ensureNumberRange(number);
 
