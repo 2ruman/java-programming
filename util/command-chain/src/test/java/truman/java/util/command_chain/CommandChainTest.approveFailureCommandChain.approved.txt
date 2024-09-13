@@ -1,0 +1,8 @@
+execute ::MyCommand(1) - I'm Kim
+execute ::MyCommand(2) - I'm Lee
+execute ::MyCommand(3) - I'm Choi
+execute ::MyCommand(4) - I'm Park
+rollback ::MyCommand(4) - I'm Park
+rollback ::MyCommand(3) - I'm Choi
+rollback ::MyCommand(2) - I'm Lee
+rollback ::MyCommand(1) - I'm Kim

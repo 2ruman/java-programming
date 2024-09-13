@@ -1,5 +1,6 @@
 package truman.java.util.command_chain;
 
+import org.approvaltests.Approvals;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.ExecutionException;
@@ -11,6 +12,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CommandChainTest {
+
+    Util mUtil = new Util();
 
     MyCommand success_1 = new MyCommand(1, "I'm Kim");
     MyCommand success_2 = new MyCommand(2, "I'm Lee");
@@ -44,8 +47,11 @@ public class CommandChainTest {
 
     @Test
     void testFollowedBy() {
-        CommandChain commandChain =
-                CommandChain.of(success_1).followedBy(success_2).followedBy(success_3).followedBy(failure).followedBy(success_4);
+        CommandChain commandChain = CommandChain.of(success_1)
+                                                .followedBy(success_2)
+                                                .followedBy(success_3)
+                                                .followedBy(failure)
+                                                .followedBy(success_4);
         assertEquals(5, commandChain.length());
     }
 
@@ -81,39 +87,47 @@ public class CommandChainTest {
 
     @Test
     void testSuccessCommandChain() {
-        CommandChain successCommandChain;
-
-        successCommandChain = CommandChain.of(success_1).followedBy(success_2).followedBy(success_3);
+        CommandChain successCommandChain = CommandChain.of(success_1)
+                .followedBy(success_2).followedBy(success_3).followedBy(success_4);
         assertTrue(successCommandChain.execute());
+    }
 
-        successCommandChain = new CommandChain(success_1, new CommandChain(success_2, new CommandChain(success_3, new CommandChain(success_4))));
-        assertTrue(successCommandChain.execute());
+    @Test
+    void approveSuccessCommandChain() {
+        String actualFileName =  "CommandChainTest.approveSuccessCommandChain.received.txt";
+        mUtil.runWith(actualFileName, () ->CommandChain.of(success_1)
+                .followedBy(success_2).followedBy(success_3).followedBy(success_4)
+                .execute());
+        Approvals.verify(mUtil.getTargetFile(actualFileName));
     }
 
     @Test
     void testFailureCommandChain() {
-        CommandChain failureCommandChain;
-
-        failureCommandChain =
-                new CommandChain(success_1, new CommandChain(success_2, new CommandChain(failure, new CommandChain(success_4))));
-        assertFalse(failureCommandChain.execute());
-
-        failureCommandChain =
-                CommandChain.of(success_1).followedBy(success_2).followedBy(failure).followedBy(success_3);
+        CommandChain failureCommandChain = CommandChain.of(success_1)
+                .followedBy(success_2).followedBy(success_3).followedBy(failure).followedBy(success_4);
         assertFalse(failureCommandChain.execute());
     }
 
     @Test
+    void approveFailureCommandChain() {
+        String actualFileName =  "CommandChainTest.approveFailureCommandChain.received.txt";
+        mUtil.runWith(actualFileName, () -> CommandChain.of(success_1)
+                .followedBy(success_2).followedBy(success_3).followedBy(failure).followedBy(success_4)
+                .execute());
+        Approvals.verify(mUtil.getTargetFile(actualFileName));
+    }
+
+    @Test
     void testFailureCommandChainWithScheduler() {
-        CommandChain failureCommandChain =
-                CommandChain.of(success_1).followedBy(success_2).followedBy(failure).followedBy(success_3);
+        CommandChain failureCommandChain = CommandChain.of(success_1)
+                .followedBy(success_2).followedBy(success_3).followedBy(failure).followedBy(success_4);
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         Future<Boolean> future = executorService.submit(failureCommandChain);
         Boolean result = null;
         try {
             result = future.get();
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            assertDoesNotThrow(() -> { throw e; });
         }
         executorService.shutdownNow();
         assertEquals(Boolean.FALSE, result);
