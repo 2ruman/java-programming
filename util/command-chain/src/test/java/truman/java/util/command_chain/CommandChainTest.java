@@ -109,6 +109,13 @@ public class CommandChainTest {
     }
 
     @Test
+    void testSingleFailureCommandChain() {
+        CommandChain failureCommandChain = CommandChain.of(failure);
+        assertFalse(failureCommandChain.execute());
+    }
+
+
+    @Test
     void approveFailureCommandChain() {
         String actualFileName =  "CommandChainTest.approveFailureCommandChain.received.txt";
         mUtil.runWith(actualFileName, () -> CommandChain.of(success_1)
