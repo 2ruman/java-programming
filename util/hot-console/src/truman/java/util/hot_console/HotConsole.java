@@ -10,33 +10,33 @@ import java.util.List;
 
 /**
 *
-* This class would be useful when you keep printing any result from your program
-* while maintaining stand-alone input line, and this class provides convenience
-* when you need to read an input immediately.
+* This class would be useful when you're going to keep printing any result on your terminal
+* while your program is waiting your input. In addition, this class provides convenience
+* when you need to read every single input immediately without blocking.
 *
-* @version 0.1.1
+* @version 0.1.2
 * @author Truman Kim (truman.t.kim@gmail.com)
 *
 */
 
 public class HotConsole extends PrintStream {
 
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
+    private static final boolean ON = true;
+    private static final boolean OFF = false;
     private static final int BUFF_SIZ = 1024;
     private static final Object LOCK = new Object();
 
-    private char buff[] = new char[BUFF_SIZ];
+    private char[] buff = new char[BUFF_SIZ];
     private int pos;
     private volatile boolean isOn;
-    private final Thread offHook = new Thread(() -> {
-        off();
-    });
+    private final Thread offHook = new Thread(this::off);
 
     private HotConsole() {
         super(System.out, true);
     }
 
-    public static final HotConsole getInstance() {
+    public static HotConsole getInstance() {
         return Holder.INSTANCE;
     }
 
@@ -49,8 +49,8 @@ public class HotConsole extends PrintStream {
             if (!isOn) {
                 isOn = true;
                 Stty.saveSettings();
-                Stty.switchCanonicalMode(false);
-                Stty.switchEchoMode(false);
+                Stty.switchCanonicalMode(OFF);
+                Stty.switchEchoMode(OFF);
                 Stty.setMin(1);
                 if (autoOff) {
                     Runtime.getRuntime().addShutdownHook(offHook);
@@ -64,8 +64,8 @@ public class HotConsole extends PrintStream {
             if (isOn) {
                 isOn = false;
                 Stty.restoreSettings();
-                Stty.switchCanonicalMode(true);
-                Stty.switchEchoMode(true);
+                Stty.switchCanonicalMode(ON);
+                Stty.switchEchoMode(ON);
             }
         }
     }
@@ -98,7 +98,7 @@ public class HotConsole extends PrintStream {
 
     private void onEnter() {
         synchronized (LOCK) {
-            Control.carrigeReturn();
+            Control.carriageReturn();
             Control.eraseTheLine();
         }
     }
@@ -146,7 +146,7 @@ public class HotConsole extends PrintStream {
     }
 
     public String getStr() {
-        String ret = "";
+        String ret;
         try {
             char c;
             while (isOn()) {
@@ -205,7 +205,7 @@ public class HotConsole extends PrintStream {
 
     public void insertln(String s) {
         synchronized (LOCK) {
-            Control.carrigeReturn();
+            Control.carriageReturn();
             Control.eraseTheLine();
             super.println(s);
             super.print(take());
@@ -213,45 +213,43 @@ public class HotConsole extends PrintStream {
     }
 
     private static class Control {
-        private static void backspace() {
-            System.out.print("\b");
+        static void backspace() {
+            System.out.print('\b');
         }
 
-        private static void carrigeReturn() {
-            System.out.print("\r");
+        static void carriageReturn() {
+            System.out.print('\r');
         }
 
-        private static void eraseCursorToEnd() {
+        static void eraseCursorToEnd() {
             System.out.print("\033[0K");
         }
 
-        private static void eraseTheLine() {
+        static void eraseTheLine() {
             System.out.print("\033[2K");
         }
     }
 
     private static class Stty {
 
-        private static String lastSettings;
+        static String lastSettings;
 
-        private static void switchEchoMode(boolean on) {
-            if (on) stty("echo", null);
-            else stty("-echo", null);
+        static void switchEchoMode(boolean on) {
+            stty(on ? "echo" : "-echo", null);
         }
 
-        private static void setMin(int n) {
+        static void setMin(int n) {
             stty("min " + n, null);
         }
 
-        private static void switchCanonicalMode(boolean on) {
-            if (on) stty("icanon", null);
-            else stty("-icanon", null);
+        static void switchCanonicalMode(boolean on) {
+            stty(on ? "icanon" : "-icanon", null);
         }
 
-        private static void saveSettings() {
+        static void saveSettings() {
             List<String> result = new LinkedList<>();
             int exitStatus = stty("--save", result);
-            if (exitStatus == 0 && result.size() > 0) {
+            if (exitStatus == 0 && !result.isEmpty()) {
                 lastSettings = result.get(0);
             }
             if (DEBUG) {
@@ -259,7 +257,7 @@ public class HotConsole extends PrintStream {
             }
         }
 
-        private static void restoreSettings() {
+        static void restoreSettings() {
             if (DEBUG) {
                 System.out.println("restoreSettings() -> " + lastSettings);
             }
@@ -268,7 +266,7 @@ public class HotConsole extends PrintStream {
             }
         }
 
-        private static int stty(String arg, Collection<String> result) {
+        static int stty(String arg, Collection<String> result) {
             String cmd = String.format("stty %s < /dev/tty", arg);
             if (DEBUG) {
                 System.out.println("stty() - Command : " + cmd);
@@ -276,7 +274,7 @@ public class HotConsole extends PrintStream {
             return exec(new String[] {"sh", "-c", cmd}, result);
         }
 
-        private static int exec(String[] cmdArray, Collection<String> result) {
+        static int exec(String[] cmdArray, Collection<String> result) {
             int exitStatus = -1;
 
             try {
