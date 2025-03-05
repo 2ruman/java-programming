@@ -5,7 +5,7 @@ public class Test {
     private static final HotConsole Out = HotConsole.getInstance();
 
     static {
-        Out.on(true);
+        Out.on();
     }
 
     Thread disturber = new Thread(() -> {
@@ -29,7 +29,7 @@ public class Test {
         disturber.start();
         int i = 0;
         while (i++ < 5) {
-            String s = Out.getStr();
+            String s = Out.getStr(">> ");
             Out.println("#" + i + " : " + s);
         }
         disturber.interrupt();
