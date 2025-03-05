@@ -21,7 +21,7 @@ import java.util.List;
 
 public class HotConsole extends PrintStream {
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     private static final boolean ON = true;
     private static final boolean OFF = false;
     private static final int BUFF_SIZ = 1024;
