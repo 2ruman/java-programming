@@ -14,7 +14,7 @@ import java.util.List;
 * while your program is waiting your input. In addition, this class provides convenience
 * when you need to read every single input immediately without blocking.
 *
-* @version 0.1.2
+* @version 0.2.0
 * @author Truman Kim (truman.t.kim@gmail.com)
 *
 */
@@ -29,6 +29,7 @@ public class HotConsole extends PrintStream {
 
     private char[] buff = new char[BUFF_SIZ];
     private int pos;
+    private int lim;
     private volatile boolean isOn;
     private final Thread offHook = new Thread(this::off);
 
@@ -42,6 +43,10 @@ public class HotConsole extends PrintStream {
 
     private static class Holder {
         private static final HotConsole INSTANCE = new HotConsole();
+    }
+
+    public void on() {
+        on(true);
     }
 
     public void on(boolean autoOff) {
@@ -90,6 +95,9 @@ public class HotConsole extends PrintStream {
 
     private void onBackspace() {
         synchronized (LOCK) {
+            if (limit()) {
+                return;
+            }
             Control.backspace();
             Control.eraseCursorToEnd();
             pop();
@@ -133,6 +141,13 @@ public class HotConsole extends PrintStream {
         synchronized (LOCK) {
             buff = new char[BUFF_SIZ];
             pos = 0;
+            lim = 0;
+        }
+    }
+
+    private boolean limit() {
+        synchronized (LOCK) {
+            return lim == pos;
         }
     }
 
@@ -143,6 +158,23 @@ public class HotConsole extends PrintStream {
             e.printStackTrace();
             return '\0';
         }
+    }
+
+    private int prefix(String str) {
+        synchronized (LOCK) {
+            lim = (str == null) ? 0 : str.length();
+            if (lim > 0) {
+                for (char c : str.toCharArray()) {
+                    put(c);
+                }
+            }
+            return lim;
+        }
+    }
+
+    public String getStr(String prompt) {
+        int beginIndex = prefix(prompt);
+        return getStr().substring(beginIndex);
     }
 
     public String getStr() {
