@@ -7,6 +7,7 @@
 + [File](#file)
 + [Process](#process)
 + [Lambda](#lambda)
++ [Network](#network)
 <br>
 
 ## Basics
@@ -311,4 +312,38 @@ public static <T> Predicate<T> orFilters(Predicate<T> left, Predicate<T> right) 
     return (left == null) ? right : left.or(right);
 }
 
+```
+
+## Network
+
+### Dump Network Interfaces
+
+```java
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Collections;
+import java.util.Enumeration;
+
+
+public static void dumpNetworkInterfaces()  {
+    try {
+        Enumeration<NetworkInterface> nifs = NetworkInterface.getNetworkInterfaces();
+        for (NetworkInterface nif : Collections.list(nifs)) {
+            printInterfaceInfo(nif);
+        }
+    } catch (SocketException ignored) {
+    }
+}
+
+// Able to get IP addresses of the host
+public static void printInterfaceInfo(NetworkInterface nif) {
+    System.out.println("Display name : " + nif.getDisplayName());
+    System.out.println("Name         : " + nif.getName());
+    Enumeration<InetAddress> inetAddresses = nif.getInetAddresses();
+    for (InetAddress inetAddress : Collections.list(inetAddresses)) {
+        System.out.println("InetAddress  : " + inetAddress);
+    }
+    System.out.println();
+}
 ```
