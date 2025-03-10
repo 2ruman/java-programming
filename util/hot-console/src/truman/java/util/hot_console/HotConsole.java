@@ -14,7 +14,7 @@ import java.util.List;
 * while your program is waiting your input. In addition, this class provides convenience
 * when you need to read every single input immediately without blocking.
 *
-* @version 0.2.0
+* @version 0.2.1
 * @author Truman Kim (truman.t.kim@gmail.com)
 *
 */
@@ -166,6 +166,7 @@ public class HotConsole extends PrintStream {
             if (lim > 0) {
                 for (char c : str.toCharArray()) {
                     put(c);
+                    print(c);
                 }
             }
             return lim;
