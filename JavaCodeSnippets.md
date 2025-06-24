@@ -57,6 +57,21 @@ private static <K, V> K getKeyByValue(Map<K, V> map, Object value) {
 
 ```
 
+### Bytes to Hex String
+
+```java
+public static String bytesToHex(byte[] bytes) {
+    if (bytes == null) return "null";
+    if (bytes.length == 0) return "";
+
+    StringBuilder sb = new StringBuilder(bytes.length * 2);
+    for (byte b : bytes) {
+        sb.append(String.format("%02X", b));
+    }
+    return sb.toString();
+}
+```
+
 ### LRU Set(Cache)
 
 ```java
