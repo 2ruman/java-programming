@@ -1,52 +1,106 @@
 package truman.java.demo.file_crypto_converter.ui;
 
 import truman.java.demo.file_crypto_converter.crypto.CryptoConverter;
+import truman.java.demo.file_crypto_converter.crypto.CryptoMode;
 import truman.java.demo.file_crypto_converter.crypto.CryptoRules;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ItemEvent;
 import java.io.File;
+import java.util.function.Consumer;
 
 public class FileCryptoConverter extends JFrame {
 
     private final JTextField targetFileField;
     private final JPasswordField passwordField;
-    private final JButton chooseButton, convertButton;
-
     private final CryptoConverter cryptoConverter;
 
-    public FileCryptoConverter(CryptoConverter cryptoConverter) {
-        this.cryptoConverter = cryptoConverter;
-
-        setTitle(String.format("File Crypto Converter (%s Mode)",
-                cryptoConverter.getEncryptMode() ? "Encrypt" : "Decrypt"));
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(450, 150);
-        setLocationRelativeTo(null);
-
+    public FileCryptoConverter() {
+        cryptoConverter = new CryptoConverter();
         targetFileField = new JTextField();
-
-        targetFileField.setEditable(false);
-
         passwordField = new JPasswordField();
 
-        chooseButton = new JButton("Choose File");
-        convertButton = new JButton("Convert");
+        initFrame();
+        initPanel(panel -> {
+            initRow1(panel);
+            initRow2(panel);
+            initRow3(panel);
+            initRow4(panel);
+            add(panel);
+        });
+    }
+
+    private void initFrame() {
+        updateFrameTitle();
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(450, 250);
+        setLocationRelativeTo(null);
+    }
+
+    private void updateFrameTitle() {
+        setTitle(String.format("File Crypto Converter (%s)", cryptoConverter.getCryptoMode()));
+    }
+
+    private void initPanel(Consumer<JPanel> panelConsumer) {
+        JPanel panel = new JPanel(new GridLayout(4, 2, 5, 5));
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        panelConsumer.accept(panel);
+    }
+
+    private void initRow1(JPanel panel) {
+        panel.add(new JLabel("Target File:"));
+        panel.add(this.targetFileField);
+        this.targetFileField.setEditable(false);
+    }
+
+    private void initRow2(JPanel panel) {
+        panel.add(new JLabel("Password:"));
+        panel.add(this.passwordField);
+    }
+
+    private void initRow3(JPanel panel) {
+        JButton chooseButton = new JButton("Choose File");
+        JButton convertButton = new JButton("Convert");
 
         chooseButton.addActionListener(e -> chooseFile());
         convertButton.addActionListener(e -> convertFile());
 
-        JPanel panel = new JPanel(new GridLayout(3, 2, 5, 5));
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        panel.add(new JLabel("Target File:"));
-        panel.add(targetFileField);
-        panel.add(new JLabel("Password:"));
-        panel.add(passwordField);
         panel.add(chooseButton);
         panel.add(convertButton);
+    }
 
-        add(panel);
+    private void initRow4(JPanel panel) {
+        JPanel radioButtonPanel = new JPanel();
+        radioButtonPanel.setLayout(new BoxLayout(radioButtonPanel, BoxLayout.Y_AXIS));
+
+        JRadioButton encryptModeButton = new JRadioButton("Encrypt");
+        JRadioButton decryptModeButton = new JRadioButton("Decrypt");
+
+        ButtonGroup modeButtonGroup= new ButtonGroup();
+        modeButtonGroup.add(encryptModeButton);
+        modeButtonGroup.add(decryptModeButton);
+
+        encryptModeButton.setSelected(cryptoConverter.isEncryptMode());
+        decryptModeButton.setSelected(!cryptoConverter.isEncryptMode());
+
+        encryptModeButton.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                cryptoConverter.setCryptoMode(CryptoMode.ENCRYPT);
+                updateFrameTitle();
+            }
+        });
+        decryptModeButton.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                cryptoConverter.setCryptoMode(CryptoMode.DECRYPT);
+                updateFrameTitle();
+            }
+        });
+        radioButtonPanel.add(encryptModeButton);
+        radioButtonPanel.add(decryptModeButton);
+
+        panel.add(radioButtonPanel);
+        panel.add(new Panel());
     }
 
     private void chooseFile() {
@@ -67,7 +121,7 @@ public class FileCryptoConverter extends JFrame {
 
         CryptoRules.Result checkResult;
 
-        checkResult = CryptoRules.checkFilePathRule(filePath, cryptoConverter.getEncryptMode());
+        checkResult = CryptoRules.checkFilePathRule(filePath, cryptoConverter.isEncryptMode());
         if (!checkResult.result) {
             JOptionPane.showMessageDialog(this, "Error: " + checkResult.errMsg);
             return;

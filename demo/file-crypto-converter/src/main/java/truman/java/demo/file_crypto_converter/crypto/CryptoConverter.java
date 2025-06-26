@@ -5,29 +5,43 @@ import java.security.SecureRandom;
 public class CryptoConverter {
 
     private static final boolean DEBUG = true;
-    private final boolean encryptMode;
+    private static final CryptoMode DEFAULT_CRYPTO_MODE = CryptoMode.ENCRYPT;
 
-    public CryptoConverter(boolean encryptMode) {
-        this.encryptMode = encryptMode;
+    private CryptoMode cryptoMode;
+
+    public CryptoConverter() {
+        this(DEFAULT_CRYPTO_MODE);
     }
 
-    public boolean getEncryptMode() {
-        return encryptMode;
+    public CryptoConverter(CryptoMode cryptoMode) {
+        this.cryptoMode = cryptoMode;
+    }
+
+    public CryptoMode getCryptoMode() {
+        return cryptoMode;
+    }
+
+    public void setCryptoMode(CryptoMode cryptoMode) {
+        this.cryptoMode = cryptoMode;
+    }
+
+    public boolean isEncryptMode() {
+        return CryptoMode.ENCRYPT == getCryptoMode();
     }
 
     public String convert(String password, String inputPath) throws Exception {
-        String outputPath = CryptoRules.generateOutputPath(inputPath, getEncryptMode());
+        String outputPath = CryptoRules.generateOutputPath(inputPath, isEncryptMode());
         return convert(password, inputPath, outputPath);
     }
 
     public String convert(String password, String inputPath, String outputPath) throws Exception {
         if (DEBUG) {
-            System.out.println("Encrypt Mode?  : " + encryptMode);
+            System.out.println("Crypto Mode?  : " + cryptoMode);
             System.out.println("Input Path  : " + inputPath);
             System.out.println("Output Path : " + outputPath);
         }
 
-        if (encryptMode) {
+        if (isEncryptMode()) {
             encrypt(password, inputPath, outputPath);
         } else {
             decrypt(password, inputPath, outputPath);

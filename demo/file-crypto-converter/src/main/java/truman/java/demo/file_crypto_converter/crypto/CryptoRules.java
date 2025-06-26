@@ -4,15 +4,15 @@ public class CryptoRules {
 
     private static final String FN_PREFIX = "obfuscated_";
 
-    public static Result checkFilePathRule(String filePath, boolean encryptMode) {
+    public static Result checkFilePathRule(String filePath, boolean isEncryptMode) {
         if (filePath == null || filePath.isEmpty()) {
             return new Result("Invalid file path");
         }
         String fileName = FileUtil.getFileName(filePath);
-        if (!encryptMode && !fileName.startsWith(FN_PREFIX)) {
+        if (!isEncryptMode && !fileName.startsWith(FN_PREFIX)) {
             return new Result("File name must start with " + FN_PREFIX);
         }
-        if (encryptMode && fileName.startsWith(FN_PREFIX)) {
+        if (isEncryptMode && fileName.startsWith(FN_PREFIX)) {
             return new Result("File name must not start with " + FN_PREFIX);
         }
         return new Result();
@@ -25,11 +25,11 @@ public class CryptoRules {
         return new Result();
     }
 
-    public static String generateOutputPath(String inputPath, boolean encryptMode) {
+    public static String generateOutputPath(String inputPath, boolean isEncryptMode) {
         String fileName = FileUtil.getFileName(inputPath);
         String outputPath = FileUtil.getFileDir(inputPath);
 
-        if (encryptMode) {
+        if (isEncryptMode) {
             outputPath += (FileUtil.attachPrefix(FN_PREFIX, fileName));
         } else {
             outputPath += (FileUtil.ripOffPrefix(FN_PREFIX, fileName));
