@@ -4,7 +4,7 @@ import java.security.SecureRandom;
 
 public class CryptoConverter {
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     private static final CryptoMode DEFAULT_CRYPTO_MODE = CryptoMode.ENCRYPT;
 
     private CryptoMode cryptoMode;

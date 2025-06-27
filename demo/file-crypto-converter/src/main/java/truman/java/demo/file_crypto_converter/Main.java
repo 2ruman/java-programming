@@ -6,6 +6,8 @@ import javax.swing.*;
 
 public class Main {
 
+    private static final String VERSION = "0.2.1";
+
     private void run() {
         init();
         drawUi();
@@ -17,7 +19,7 @@ public class Main {
 
     private void drawUi() {
         SwingUtilities.invokeLater(() -> {
-            new FileCryptoConverter().setVisible(true);
+            new FileCryptoConverter(VERSION).setVisible(true);
         });
     }
 

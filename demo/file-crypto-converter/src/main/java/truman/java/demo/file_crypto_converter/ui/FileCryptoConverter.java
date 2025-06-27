@@ -12,14 +12,16 @@ import java.util.function.Consumer;
 
 public class FileCryptoConverter extends JFrame {
 
+    private final String version;
     private final JTextField targetFileField;
     private final JPasswordField passwordField;
     private final CryptoConverter cryptoConverter;
 
-    public FileCryptoConverter() {
-        cryptoConverter = new CryptoConverter();
-        targetFileField = new JTextField();
-        passwordField = new JPasswordField();
+    public FileCryptoConverter(String version) {
+        this.version = version;
+        this.cryptoConverter = new CryptoConverter();
+        this.targetFileField = new JTextField();
+        this.passwordField = new JPasswordField();
 
         initFrame();
         initPanel(panel -> {
@@ -98,9 +100,14 @@ public class FileCryptoConverter extends JFrame {
         });
         radioButtonPanel.add(encryptModeButton);
         radioButtonPanel.add(decryptModeButton);
-
         panel.add(radioButtonPanel);
-        panel.add(new Panel());
+
+        JLabel versionLabel = new JLabel("Version: " + version);
+        versionLabel.setFont(new Font("Arial", Font.BOLD|Font.ITALIC, 12));
+        versionLabel.setForeground(Color.GRAY);
+        versionLabel.setVerticalAlignment(SwingConstants.BOTTOM);
+        versionLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        panel.add(versionLabel);
     }
 
     private void chooseFile() {
