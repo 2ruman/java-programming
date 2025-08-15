@@ -146,16 +146,14 @@ public class AdbConsole extends JFrame implements TestableUi {
         out.setEditable(false);
         out.setLineWrap(true);
         out.setWrapStyleWord(true);
-        JScrollPane right = new JScrollPane(out);
 
+        JPanel paddedPanel = new JPanel(new BorderLayout());
+        paddedPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
+        paddedPanel.add(out);
+
+        JScrollPane right = new JScrollPane(paddedPanel);
         parent.setRightComponent(right);
     }
-
-    private void appendOutput(String text) {
-        out.append(text + "\n");
-        out.setCaretPosition(out.getDocument().getLength());
-    }
-
 
     @Override
     public void println(String s) {
