@@ -38,14 +38,20 @@ public class MyTester implements Tester {
     }
 
     private void attach(TestableUi tui) {
-        add(tui, "Increase PID - 100", this::test1);
-        add(tui, "Increase PID - 1000", this::test2);
-        add(tui, "Increase PID - 10000", this::test3);
+        add(tui, "Increase PID - 1", () -> increasePid(1));
+        add(tui, "Increase PID - 100", () -> increasePid(100));
+        add(tui, "Increase PID - 1000", () -> increasePid(1000));
+        add(tui, "Increase PID - 5000", () -> increasePid(5000));
+        add(tui, "Increase PID - 10000", () -> increasePid(10000));
     }
 
     private synchronized void add(TestableUi tui, String name, Runnable tester) {
         tui.addTester(name);
         testers.put(name, tester);
+    }
+
+    private void increasePid(int number) {
+        Application.getExecutor().execute(String.format(increasePidFormat, number));
     }
 
     private void test1() {

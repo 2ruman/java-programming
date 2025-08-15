@@ -1,6 +1,7 @@
 package truman.java.demo.adbconsole.common;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 public class Utils {
@@ -36,6 +37,16 @@ public class Utils {
     public static String getEnvPath() {
         String envPath = System.getenv("PATH");
         return envPath != null ? envPath : "";
+    }
+
+    public static String getJarPath() {
+        String jarPath = "";
+        try {
+            jarPath = new File(Utils.class.getProtectionDomain()
+                    .getCodeSource().getLocation().toURI()).getPath();
+        } catch (URISyntaxException ignored) {
+        }
+        return jarPath;
     }
 
     public static String getResourcePath(String resName) {
