@@ -309,6 +309,46 @@ public static long getIno(String filePath) {
 long pid = ProcessHandle.current().pid();
 ```
 
+### Execute Command with Environment
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+public static List<String> executeWithEnv(String command, String... envPairs) {
+    List<String> result = new ArrayList<>();
+    try {
+        ProcessBuilder pb = new ProcessBuilder(command.split("\\s+"));
+        for (String envPair : envPairs) {
+            String[] envVar = envPair.split("\\s*=\\s*");
+            if (envVar.length > 1) {
+                pb.environment().put(envVar[0], envVar[1]);
+            }
+        }
+        Process proc = pb.start();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                result.add(line);
+            }
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    return result;
+}
+
+(...)
+
+executeWithEnv("bash -c export", "ABC_1 = 1", "ABC_2=2", "ABC_3    =3")
+        .stream()
+        .filter(line -> line.contains("ABC_"))
+        .forEach(System.out::println);
+```
+
 ## Lambda
 
 ### Combine Filters
