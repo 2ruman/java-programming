@@ -349,6 +349,43 @@ executeWithEnv("bash -c export", "ABC_1 = 1", "ABC_2=2", "ABC_3    =3")
         .forEach(System.out::println);
 ```
 
+### Execute Grep by Pipelining
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public static List<String> grep(String origCommand, String keyword) {
+    List<String> result = new ArrayList<>();
+    String grepCommand = "grep " + keyword;
+    try {
+        List<Process> processList =
+                ProcessBuilder.startPipeline(Arrays.asList(
+                        new ProcessBuilder(origCommand.split("\\s+")),
+                        new ProcessBuilder(grepCommand.split("\\s+"))));
+
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(processList.get(1).getInputStream()))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                result.add(line);
+            }
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    return result;
+}
+
+(...)
+
+grep("bash -c export", "USER").forEach(System.out::println);
+```
+
 ## Lambda
 
 ### Combine Filters
