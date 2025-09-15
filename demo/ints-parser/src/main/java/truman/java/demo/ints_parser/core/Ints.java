@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Ints {
@@ -20,6 +19,14 @@ public class Ints {
 
     private Ints(Set<Integer> ints) {
         this.ints = Collections.unmodifiableSet(ints);
+    }
+
+    private static Set<Integer> genSet(Collection<Integer> c) {
+        return (c instanceof TreeSet<Integer> ? (Set<Integer>) c : new TreeSet<>(c));
+    }
+
+    public static Ints parse(Collection<Integer> c) {
+        return new Ints(genSet(c));
     }
 
     public static Ints parse(String s) {
@@ -45,9 +52,8 @@ public class Ints {
     }
 
     private static Set<Integer> parseStream(Stream<String> s) {
-        return s.map(String::trim)
-                .map(Integer::valueOf)
-                .collect(Collectors.toCollection(TreeSet::new));
+        return genSet(
+                s.map(String::trim).map(Integer::valueOf).toList());
     }
 
     private static Ints empty() {
@@ -55,7 +61,7 @@ public class Ints {
     }
 
     public static Ints aggregate(Ints left, Ints right) {
-        Set<Integer> aggregated = new TreeSet<>(left.get());
+        Set<Integer> aggregated = genSet(left.get());
         aggregated.addAll(right.get());
         return new Ints(aggregated);
     }
@@ -71,6 +77,10 @@ public class Ints {
 
     public int size() {
         return ints.size();
+    }
+
+    public boolean contains(int value) {
+        return ints.contains(value);
     }
 
     public String toString() {
