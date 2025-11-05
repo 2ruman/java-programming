@@ -1,5 +1,6 @@
 package truman.java.util.abs_handler_thread;
 
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -7,13 +8,13 @@ import java.util.concurrent.LinkedBlockingQueue;
  * This abstract class is to provide convenience when writing up a sort of
  * "Handler Queue" codes for handling a certain type of data.
  *
- * @version 0.1.0
+ * @version 0.1.1
  * @author Truman Kim (truman.t.kim@gmail.com)
  *
  */
 public abstract class AbstractHandlerThread<E> extends Thread {
 
-    private final LinkedBlockingQueue<E> mQ =
+    private final BlockingQueue<E> mQ =
                     new LinkedBlockingQueue<>();
 
     public AbstractHandlerThread() {
@@ -37,6 +38,8 @@ public abstract class AbstractHandlerThread<E> extends Thread {
     protected abstract void handle(E e);
     protected abstract void onInterrupted(InterruptedException e);
     protected abstract void onTerminated();
+    protected void onError(Exception e) {
+    }
 
     @Override
     public void run() {
@@ -50,6 +53,8 @@ public abstract class AbstractHandlerThread<E> extends Thread {
             }
         } catch (InterruptedException e) {
             onInterrupted(e);
+        } catch (Exception e) {
+            onError(e);
         }
         onTerminated();
     }

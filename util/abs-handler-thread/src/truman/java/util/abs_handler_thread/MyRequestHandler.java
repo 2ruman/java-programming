@@ -13,8 +13,10 @@ public class MyRequestHandler extends AbstractHandlerThread<MyRequest> {
     @Override
     protected void handle(MyRequest e) {
         int request = e.getRequest();
-        if (e.getRequest() == MyRequest.PRINT_MESSAGE) {
+        if (request == MyRequest.PRINT_MESSAGE) {
             mCallbacks.onReceived(e.getData());
+        } else if (request == MyRequest.NPE_TEST) {
+            throw new NullPointerException("Intended");
         } else {
             System.out.println("Not supported request... " + request);
         }
@@ -28,5 +30,14 @@ public class MyRequestHandler extends AbstractHandlerThread<MyRequest> {
     @Override
     protected void onTerminated() {
         mCallbacks.onTerminated(getName());
+    }
+
+    @Override
+    protected void onError(Exception e) {
+        if (e instanceof NullPointerException
+                && "Intended".equals(e.getMessage())) {
+            System.out.println("Debug: It must be intended situation");
+        }
+        mCallbacks.onError(e, getName());
     }
 }

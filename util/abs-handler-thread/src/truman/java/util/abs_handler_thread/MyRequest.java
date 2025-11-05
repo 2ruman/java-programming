@@ -4,6 +4,7 @@ public class MyRequest {
 
     public static final int NONE = 0;
     public static final int PRINT_MESSAGE = 1;
+    public static final int NPE_TEST = 2;
 
     private final int mRequest;
     private String mData;

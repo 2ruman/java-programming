@@ -77,6 +77,28 @@ public class Test {
         return this;
     }
 
+    public Test test_3() {
+        System.out.println("\nTest - #3: ");
+        System.out.println("\tHandling unexpected errors\n");
+
+        mRequestHandler = new MyRequestHandler(mCallbacks);
+        mRequestHandler.start();
+
+        mRequestHandler.add(new MyRequest(MyRequest.NONE));
+        mRequestHandler.add(new MyRequest(MyRequest.NPE_TEST));
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {}
+
+        System.out.println("Terminate!");
+        mRequestHandler.terminate();
+        try {
+            mRequestHandler.join();
+        } catch (InterruptedException e) {}
+
+        return this;
+    }
+
     class MessageSender extends Thread {
 
         public void run() {
