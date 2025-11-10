@@ -40,8 +40,15 @@ public class DataAccumulator<T extends AccumulableData> {
     }
 
     public DataAccumulator() {
-        this.backOffTime = DEFAULT_BACK_OFF_TIME;
-        this.intervalTime = DEFAULT_INTERVAL_TIME;
+        this(DEFAULT_BACK_OFF_TIME, DEFAULT_INTERVAL_TIME);
+    }
+
+    public DataAccumulator(long backOffTime, long intervalTime) {
+        if (backOffTime <= 0 || intervalTime <= 0) {
+            throw new IllegalArgumentException();
+        }
+        this.backOffTime = backOffTime;
+        this.intervalTime = intervalTime;
         this.map = genMap(null);
     }
 
