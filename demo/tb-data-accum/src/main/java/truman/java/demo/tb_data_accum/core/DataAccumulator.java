@@ -95,6 +95,9 @@ public class DataAccumulator<T extends AccumulableData> {
         if (!isRunning) {
             return;
         }
+        if (data == null) {
+            return;
+        }
         long timestamp = data.getTimestamp();
         updateBaseTime(timestamp);
 
