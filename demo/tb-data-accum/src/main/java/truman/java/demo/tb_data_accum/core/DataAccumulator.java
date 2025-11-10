@@ -12,6 +12,7 @@ public class DataAccumulator<T extends AccumulableData> {
     private static final long DEFAULT_BACK_OFF_TIME = 3000L;
     private static final long DEFAULT_INTERVAL_TIME = 1000L;
 
+    private final boolean skipEmpty;
     private final long intervalTime;
     private final long backOffTime;
     private final Object gLock = new Object();
@@ -20,18 +21,26 @@ public class DataAccumulator<T extends AccumulableData> {
     private volatile long baseTime;
     private volatile boolean isRunning;
     private volatile DataConsumer<T> dataConsumer;
+    private volatile DataSnapshotConsumer<T> dataSnapshotConsumer;
 
     private ScheduledExecutorService scheduler;
     private DataFlusher<NavigableMap<Integer, DataSnapshot<T>>> dataFlusher;
     private final DataSink<NavigableMap<Integer, DataSnapshot<T>>> dataSink = intervalData -> {
         var dc = getDataConsumer();
-        if (dc != null) {
-            intervalData.forEach((idx, ds) -> {
-                ds.take().forEach(data -> {
-                    dc.consume(idx, data);
-                });
-            });
+        var dsc = getDataSnapshotConsumer();
+        if (dc == null && dsc == null) {
+            return;
         }
+        intervalData.forEach((i, ds) -> {
+            if (dsc != null) {
+                dsc.consume(i, ds);
+            }
+            if (dc != null) {
+                ds.take().forEach(d -> {
+                    dc.consume(i, d);
+                });
+            }
+        });
     };
 
     private static <T extends AccumulableData> NavigableMap<Integer, DataSnapshot<T>> genMap(
@@ -40,13 +49,14 @@ public class DataAccumulator<T extends AccumulableData> {
     }
 
     public DataAccumulator() {
-        this(DEFAULT_BACK_OFF_TIME, DEFAULT_INTERVAL_TIME);
+        this(DEFAULT_BACK_OFF_TIME, DEFAULT_INTERVAL_TIME, true);
     }
 
-    public DataAccumulator(long backOffTime, long intervalTime) {
+    public DataAccumulator(long backOffTime, long intervalTime, boolean skipEmpty) {
         if (backOffTime <= 0 || intervalTime <= 0) {
             throw new IllegalArgumentException();
         }
+        this.skipEmpty = skipEmpty;
         this.backOffTime = backOffTime;
         this.intervalTime = intervalTime;
         this.map = genMap(null);
@@ -124,10 +134,11 @@ public class DataAccumulator<T extends AccumulableData> {
             return;
         }
         synchronized (gLock) {
-            if (hasDataLocked()) {
-                NavigableMap<Integer, DataSnapshot<T>> m = detachHead(currentIdx);
-                flush(m);
+            if (skipEmpty && !hasDataLocked()) {
+                return;
             }
+            NavigableMap<Integer, DataSnapshot<T>> m = detachHead(currentIdx);
+            flush(m);
         }
     }
 
@@ -165,6 +176,17 @@ public class DataAccumulator<T extends AccumulableData> {
 
     private DataConsumer<T> getDataConsumer() {
         return dataConsumer;
+    }
+
+    public void registerDataSnapshotConsumer(DataSnapshotConsumer<T> dataSnapshotConsumer) {
+        if (dataSnapshotConsumer == null) {
+            return;
+        }
+        this.dataSnapshotConsumer = dataSnapshotConsumer;
+    }
+
+    private DataSnapshotConsumer<T> getDataSnapshotConsumer() {
+        return dataSnapshotConsumer;
     }
 
     static class Util {
