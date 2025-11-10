@@ -14,10 +14,6 @@ public class DataFlusher<E> extends AbstractHandlerThread<E> {
         add(data);
     }
 
-    public void destory() {
-        terminate();
-    }
-
     @Override
     protected void handle(E data) {
         dataSink.down(data);

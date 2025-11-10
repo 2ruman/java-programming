@@ -64,7 +64,7 @@ public class DataAccumulator<T extends AccumulableData> {
         synchronized (gLock) {
             isRunning = false;
             if (dataFlusher != null) {
-                dataFlusher.destory();
+                dataFlusher.terminate();
                 dataFlusher = null;
             }
             if (scheduler != null) {
