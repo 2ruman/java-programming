@@ -1,17 +1,17 @@
 package truman.java.demo.tb_data_accum.core;
 
-public abstract class AccumulableData implements Accumulable {
+public abstract class AccumulableData<U> implements Accumulable {
 
     private final int type;
-    private final int uuid;
+    private final U uuid;
     private final long timestamp;
     private volatile Object tag;
 
-    protected AccumulableData(int uuid, long timestamp) {
+    protected AccumulableData(U uuid, long timestamp) {
         this(0, uuid, timestamp);
     }
 
-    protected AccumulableData(int type, int uuid, long timestamp) {
+    protected AccumulableData(int type, U uuid, long timestamp) {
         this.type = type;
         this.uuid = uuid;
         this.timestamp = timestamp;
@@ -21,7 +21,7 @@ public abstract class AccumulableData implements Accumulable {
         return type;
     }
 
-    public int getUuid() {
+    public U getUuid() {
         return uuid;
     }
 

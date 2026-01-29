@@ -2,11 +2,11 @@ package truman.java.demo.tb_data_accum.core;
 
 import java.util.*;
 
-public class DataSnapshot<T extends AccumulableData> implements Snapshot<T> {
+public class DataSnapshot<U, T extends AccumulableData<U>> implements Snapshot<T> {
 
-    private volatile Map<Integer, T> snapshot = genMap();
+    private volatile Map<U, T> snapshot = genMap();
 
-    private Map<Integer, T> genMap() {
+    private Map<U, T> genMap() {
         return Collections.synchronizedMap(new HashMap<>());
     }
 

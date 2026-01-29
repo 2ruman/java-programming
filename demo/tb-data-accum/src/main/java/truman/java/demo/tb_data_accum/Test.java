@@ -17,7 +17,7 @@ public class Test {
         System.out.printf("[%d] %s%n", idx, data.toString());
     }
 
-    void dumpDataSnapshot(int idx, DataSnapshot<MyData> dataSnapshot) {
+    void dumpDataSnapshot(int idx, DataSnapshot<MyUuid, MyData> dataSnapshot) {
         dataSnapshot.take().forEach(data -> {
             dumpData(idx, data);
         });
@@ -49,39 +49,39 @@ public class Test {
             long currentTime = currentTime();
             debug("Current time : " + currentTime);
             debug("base time    : " + mMyDataAccumulator.getBaseTime());
-            mMyDataAccumulator.onData(new MyData(1, currentTime(), 100, 100)); // 1-1
+            mMyDataAccumulator.onData(new MyData(1, 10000, 55555, currentTime(), 100, 100)); // 1-1
             debug("base time    : " + mMyDataAccumulator.getBaseTime());
 
             // Index 0 : 0 ~ 1 sec
-            mMyDataAccumulator.onData(new MyData(1, currentTime(), 100, 100)); // 1-2
-            mMyDataAccumulator.onData(new MyData(1, currentTime(), 100, 100)); // 1-3
+            mMyDataAccumulator.onData(new MyData(1, 10000, 55555, currentTime(), 100, 100)); // 1-2
+            mMyDataAccumulator.onData(new MyData(1, 10000, 55555, currentTime(), 100, 100)); // 1-3
             sleep(500);
-            mMyDataAccumulator.onData(new MyData(2, currentTime(), 100, 100)); // 2-1
-            mMyDataAccumulator.onData(new MyData(1, currentTime(), 100, 100)); // 1-4
-            mMyDataAccumulator.onData(new MyData(2, currentTime(), 100, 100)); // 2-2
-            mMyDataAccumulator.onData(new MyData(1, currentTime(), 100, 100)); // 1-5
-            mMyDataAccumulator.onData(new MyData(2, currentTime(), 100, 100)); // 2-3
-            mMyDataAccumulator.onData(new MyData(3, currentTime(), 100, 100)); // 3-1
-            mMyDataAccumulator.onData(new MyData(4, currentTime(), 100, 100)); // 4-1
+            mMyDataAccumulator.onData(new MyData(1, 20000, 55555, currentTime(), 100, 100)); // 2-1
+            mMyDataAccumulator.onData(new MyData(1, 10000, 55555, currentTime(), 100, 100)); // 1-4
+            mMyDataAccumulator.onData(new MyData(1, 20000, 55555, currentTime(), 100, 100)); // 2-2
+            mMyDataAccumulator.onData(new MyData(1, 10000, 55555, currentTime(), 100, 100)); // 1-5
+            mMyDataAccumulator.onData(new MyData(1, 20000, 55555, currentTime(), 100, 100)); // 2-3
+            mMyDataAccumulator.onData(new MyData(1, 30000, 55555, currentTime(), 100, 100)); // 3-1
+            mMyDataAccumulator.onData(new MyData(1, 40000, 55555, currentTime(), 100, 100)); // 4-1
 
             // Index 1 : 1 ~ 2 sec
             sleep(1000);
-            mMyDataAccumulator.onData(new MyData(1, currentTime(), 100, 100)); // 1-1
-            mMyDataAccumulator.onData(new MyData(1, currentTime(), 100, 100)); // 1-2
-            mMyDataAccumulator.onData(new MyData(5, currentTime(), 100, 100)); // 5-1
+            mMyDataAccumulator.onData(new MyData(1, 10000, 55555, currentTime(), 100, 100)); // 1-1
+            mMyDataAccumulator.onData(new MyData(1, 10000, 55555, currentTime(), 100, 100)); // 1-2
+            mMyDataAccumulator.onData(new MyData(1, 50000, 55555, currentTime(), 100, 100)); // 5-1
 
             // Index 2 : 2 ~ 3 sec
             sleep(1000);
-            mMyDataAccumulator.onData(new MyData(6, currentTime(), 100, 100)); // 6-1
+            mMyDataAccumulator.onData(new MyData(1, 60000, 55555, currentTime(), 100, 100)); // 6-1
 
             // Index 4 : 4 ~ 5 sec
             sleep(2000);
-            mMyDataAccumulator.onData(new MyData(1, currentTime(), 100, 100)); // 1-1
-            mMyDataAccumulator.onData(new MyData(5, currentTime(), 100, 100)); // 5-1
+            mMyDataAccumulator.onData(new MyData(1, 10000, 55555, currentTime(), 100, 100)); // 1-1
+            mMyDataAccumulator.onData(new MyData(1, 50000, 55555, currentTime(), 100, 100)); // 5-1
 
             // Index 5 : 5 ~ 6 sec
             sleep(500);
-            mMyDataAccumulator.onData(new MyData(5, currentTime(), 100, 100)); // 5-1
+            mMyDataAccumulator.onData(new MyData(1, 50000, 55555, currentTime(), 100, 100)); // 5-1
         });
 
         sleep(7000);
@@ -106,39 +106,39 @@ public class Test {
             long currentTime = currentTime();
             debug("Current time : " + currentTime);
             debug("base time    : " + mMyDataAccumulator.getBaseTime());
-            mMyDataAccumulator.onData(new MyData(1, currentTime(), 100, 100)); // 1-1
+            mMyDataAccumulator.onData(new MyData(1, 10000, 55555, currentTime(), 100, 100)); // 1-1
             debug("base time    : " + mMyDataAccumulator.getBaseTime());
 
             // Index 0 : 0 ~ 1 sec
-            mMyDataAccumulator.onData(new MyData(1, currentTime(), 100, 100)); // 1-2
-            mMyDataAccumulator.onData(new MyData(1, currentTime(), 100, 100)); // 1-3
+            mMyDataAccumulator.onData(new MyData(1, 10000, 55555, currentTime(), 100, 100)); // 1-2
+            mMyDataAccumulator.onData(new MyData(1, 10000, 55555, currentTime(), 100, 100)); // 1-3
             sleep(500);
-            mMyDataAccumulator.onData(new MyData(2, currentTime(), 100, 100)); // 2-1
-            mMyDataAccumulator.onData(new MyData(1, currentTime(), 100, 100)); // 1-4
-            mMyDataAccumulator.onData(new MyData(2, currentTime(), 100, 100)); // 2-2
-            mMyDataAccumulator.onData(new MyData(1, currentTime(), 100, 100)); // 1-5
-            mMyDataAccumulator.onData(new MyData(2, currentTime(), 100, 100)); // 2-3
-            mMyDataAccumulator.onData(new MyData(3, currentTime(), 100, 100)); // 3-1
-            mMyDataAccumulator.onData(new MyData(4, currentTime(), 100, 100)); // 4-1
+            mMyDataAccumulator.onData(new MyData(2, 10000, 55555, currentTime(), 100, 100)); // 2-1
+            mMyDataAccumulator.onData(new MyData(1, 10000, 55555, currentTime(), 100, 100)); // 1-4
+            mMyDataAccumulator.onData(new MyData(2, 10000, 55555, currentTime(), 100, 100)); // 2-2
+            mMyDataAccumulator.onData(new MyData(1, 10000, 55555, currentTime(), 100, 100)); // 1-5
+            mMyDataAccumulator.onData(new MyData(2, 10000, 55555, currentTime(), 100, 100)); // 2-3
+            mMyDataAccumulator.onData(new MyData(3, 10000, 55555, currentTime(), 100, 100)); // 3-1
+            mMyDataAccumulator.onData(new MyData(4, 10000, 55555, currentTime(), 100, 100)); // 4-1
 
             // Index 1 : 1 ~ 2 sec
             sleep(1000);
-            mMyDataAccumulator.onData(new MyData(1, currentTime(), 100, 100)); // 1-1
-            mMyDataAccumulator.onData(new MyData(1, currentTime(), 100, 100)); // 1-2
-            mMyDataAccumulator.onData(new MyData(5, currentTime(), 100, 100)); // 5-1
+            mMyDataAccumulator.onData(new MyData(1, 10000, 55555, currentTime(), 100, 100)); // 1-1
+            mMyDataAccumulator.onData(new MyData(1, 10000, 55555, currentTime(), 100, 100)); // 1-2
+            mMyDataAccumulator.onData(new MyData(5, 10000, 55555, currentTime(), 100, 100)); // 5-1
 
             // Index 2 : 2 ~ 3 sec
             sleep(1000);
-            mMyDataAccumulator.onData(new MyData(6, currentTime(), 100, 100)); // 6-1
+            mMyDataAccumulator.onData(new MyData(6, 10000, 55555, currentTime(), 100, 100)); // 6-1
 
             // Index 4 : 4 ~ 5 sec
             sleep(2000);
-            mMyDataAccumulator.onData(new MyData(1, currentTime(), 100, 100)); // 1-1
-            mMyDataAccumulator.onData(new MyData(5, currentTime(), 100, 100)); // 5-1
+            mMyDataAccumulator.onData(new MyData(1, 10000, 55555, currentTime(), 100, 100)); // 1-1
+            mMyDataAccumulator.onData(new MyData(5, 10000, 55555, currentTime(), 100, 100)); // 5-1
 
             // Index 5 : 5 ~ 6 sec
             sleep(500);
-            mMyDataAccumulator.onData(new MyData(5, currentTime(), 100, 100)); // 5-1
+            mMyDataAccumulator.onData(new MyData(5, 10000, 55555, currentTime(), 100, 100)); // 5-1
         });
 
         sleep(7000);
