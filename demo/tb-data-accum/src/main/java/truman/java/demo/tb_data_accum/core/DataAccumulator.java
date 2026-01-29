@@ -7,7 +7,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class DataAccumulator<T extends AccumulableData> {
+public class DataAccumulator<U, T extends AccumulableData<U>> {
 
     private static final long DEFAULT_BACK_OFF_TIME = 3000L;
     private static final long DEFAULT_INTERVAL_TIME = 1000L;
@@ -16,16 +16,16 @@ public class DataAccumulator<T extends AccumulableData> {
     private final long intervalTime;
     private final long backOffTime;
     private final Object gLock = new Object();
-    private final NavigableMap<Integer, DataSnapshot<T>> map;
+    private final NavigableMap<Integer, DataSnapshot<U, T>> map;
 
     private volatile long baseTime;
     private volatile boolean isRunning;
     private volatile DataConsumer<T> dataConsumer;
-    private volatile DataSnapshotConsumer<T> dataSnapshotConsumer;
+    private volatile DataSnapshotConsumer<U, T> dataSnapshotConsumer;
 
     private ScheduledExecutorService scheduler;
-    private DataFlusher<NavigableMap<Integer, DataSnapshot<T>>> dataFlusher;
-    private final DataSink<NavigableMap<Integer, DataSnapshot<T>>> dataSink = intervalData -> {
+    private DataFlusher<NavigableMap<Integer, DataSnapshot<U, T>>> dataFlusher;
+    private final DataSink<NavigableMap<Integer, DataSnapshot<U, T>>> dataSink = intervalData -> {
         var dc = getDataConsumer();
         var dsc = getDataSnapshotConsumer();
         if (dc == null && dsc == null) {
@@ -43,8 +43,8 @@ public class DataAccumulator<T extends AccumulableData> {
         });
     };
 
-    private static <T extends AccumulableData> NavigableMap<Integer, DataSnapshot<T>> genMap(
-            SortedMap<Integer, DataSnapshot<T>> baseMap) {
+    private static <U, T extends AccumulableData<U>> NavigableMap<Integer, DataSnapshot<U, T>> genMap(
+            SortedMap<Integer, DataSnapshot<U, T>> baseMap) {
         return (baseMap != null) ? new TreeMap<>(baseMap) : new TreeMap<>();
     }
 
@@ -121,7 +121,7 @@ public class DataAccumulator<T extends AccumulableData> {
         return baseTime > 0L;
     }
 
-    private DataSnapshot<T> getDataSnapshotLocked(int idx) {
+    private DataSnapshot<U, T> getDataSnapshotLocked(int idx) {
         if (!map.containsKey(idx)) {
             map.put(idx, new DataSnapshot<>());
         }
@@ -140,7 +140,7 @@ public class DataAccumulator<T extends AccumulableData> {
             if (skipEmpty && !hasDataLocked()) {
                 return;
             }
-            NavigableMap<Integer, DataSnapshot<T>> m = detachHead(currentIdx);
+            NavigableMap<Integer, DataSnapshot<U, T>> m = detachHead(currentIdx);
             flush(m);
         }
     }
@@ -157,7 +157,7 @@ public class DataAccumulator<T extends AccumulableData> {
         return !map.isEmpty();
     }
 
-    private NavigableMap<Integer, DataSnapshot<T>> detachHead(int bound) {
+    private NavigableMap<Integer, DataSnapshot<U, T>> detachHead(int bound) {
         synchronized (gLock) {
             var headView = map.headMap(bound, false);
             var copiedView = genMap(headView);
@@ -166,7 +166,7 @@ public class DataAccumulator<T extends AccumulableData> {
         }
     }
 
-    private void flush(NavigableMap<Integer, DataSnapshot<T>> detached) {
+    private void flush(NavigableMap<Integer, DataSnapshot<U, T>> detached) {
         dataFlusher.flush(detached);
     }
 
@@ -181,14 +181,14 @@ public class DataAccumulator<T extends AccumulableData> {
         return dataConsumer;
     }
 
-    public void registerDataSnapshotConsumer(DataSnapshotConsumer<T> dataSnapshotConsumer) {
+    public void registerDataSnapshotConsumer(DataSnapshotConsumer<U, T> dataSnapshotConsumer) {
         if (dataSnapshotConsumer == null) {
             return;
         }
         this.dataSnapshotConsumer = dataSnapshotConsumer;
     }
 
-    private DataSnapshotConsumer<T> getDataSnapshotConsumer() {
+    private DataSnapshotConsumer<U, T> getDataSnapshotConsumer() {
         return dataSnapshotConsumer;
     }
 

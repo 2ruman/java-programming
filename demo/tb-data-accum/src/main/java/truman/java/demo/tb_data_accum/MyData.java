@@ -3,17 +3,17 @@ package truman.java.demo.tb_data_accum;
 import truman.java.demo.tb_data_accum.core.Accumulable;
 import truman.java.demo.tb_data_accum.core.AccumulableData;
 
-public class MyData extends AccumulableData {
+public class MyData extends AccumulableData<MyUuid> {
 
     private int rxBytes;
     private int txBytes;
 
-    public MyData(int uuid, long timestamp) {
-        this(uuid, timestamp, 0, 0);
+    public MyData(int id, int addr, int port, long timestamp) {
+        this(id, addr, port, timestamp, 0, 0);
     }
 
-    public MyData(int uuid, long timestamp, int rxBytes, int txBytes) {
-        super(uuid, timestamp);
+    public MyData(int id, int addr, int port, long timestamp, int rxBytes, int txBytes) {
+        super(new MyUuid(id ,addr, port), timestamp);
         this.rxBytes = rxBytes;
         this.txBytes = txBytes;
     }
@@ -42,7 +42,7 @@ public class MyData extends AccumulableData {
 
     @Override
     public String toString() {
-        return String.format("uuid: %6d, t: %d, rx: %6d, tx: %6d",
+        return String.format("uuid: %s, t: %d, rx: %6d, tx: %6d",
                 getUuid(), getTimestamp(), getRxBytes(), getTxBytes());
     }
 }
