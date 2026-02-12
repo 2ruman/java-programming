@@ -98,10 +98,10 @@ public class DataAccumulator<U, T extends AccumulableData<U>> {
         if (data == null) {
             return;
         }
-        long timestamp = data.getTimestamp();
-        updateBaseTime(timestamp);
+        long currentTime = System.currentTimeMillis();
+        updateBaseTime(currentTime);
 
-        int idx = timeToIndex(timestamp, getBaseTime());
+        int idx = timeToIndex(currentTime, getBaseTime());
         if (!checkIdx(idx)) {
             return;
         }
@@ -111,9 +111,9 @@ public class DataAccumulator<U, T extends AccumulableData<U>> {
         }
     }
 
-    private void updateBaseTime(long timestamp) {
+    private void updateBaseTime(long currentTime) {
         if (!checkBaseTime()) {
-            baseTime = timestamp;
+            baseTime = currentTime;
         }
     }
 
