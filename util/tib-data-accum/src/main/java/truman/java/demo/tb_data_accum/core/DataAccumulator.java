@@ -9,12 +9,12 @@ import java.util.concurrent.TimeUnit;
 
 public class DataAccumulator<U, T extends AccumulableData<U>> {
 
-    private static final long DEFAULT_BACK_OFF_TIME = 3000L;
     private static final long DEFAULT_INTERVAL_TIME = 1000L;
+    private static final int DEFAULT_BACK_OFF_IDX = 1;
 
     private final boolean skipEmpty;
     private final long intervalTime;
-    private final long backOffTime;
+    private final int backOffIdx;
     private final Object gLock = new Object();
     private final NavigableMap<Integer, DataSnapshot<U, T>> map;
 
@@ -49,15 +49,19 @@ public class DataAccumulator<U, T extends AccumulableData<U>> {
     }
 
     public DataAccumulator() {
-        this(DEFAULT_BACK_OFF_TIME, DEFAULT_INTERVAL_TIME, true);
+        this(DEFAULT_INTERVAL_TIME, DEFAULT_BACK_OFF_IDX, true);
     }
 
-    public DataAccumulator(long backOffTime, long intervalTime, boolean skipEmpty) {
-        if (backOffTime <= 0 || intervalTime <= 0) {
+    public DataAccumulator(long intervalTime) {
+        this(intervalTime, DEFAULT_BACK_OFF_IDX, true);
+    }
+
+    public DataAccumulator(long intervalTime, int backOffIdx, boolean skipEmpty) {
+        if (backOffIdx <= 0 || intervalTime <= 0) {
             throw new IllegalArgumentException();
         }
         this.skipEmpty = skipEmpty;
-        this.backOffTime = backOffTime;
+        this.backOffIdx = backOffIdx;
         this.intervalTime = intervalTime;
         this.map = genMap(null);
     }
@@ -71,7 +75,7 @@ public class DataAccumulator<U, T extends AccumulableData<U>> {
             if (scheduler == null) {
                 scheduler = Executors.newSingleThreadScheduledExecutor();
                 scheduler.scheduleAtFixedRate(
-                        this::onTime, backOffTime + intervalTime, intervalTime, TimeUnit.MILLISECONDS);
+                        this::onTime, intervalTime * (backOffIdx + 1), intervalTime, TimeUnit.MILLISECONDS);
             }
             isRunning = true;
         }
@@ -102,7 +106,7 @@ public class DataAccumulator<U, T extends AccumulableData<U>> {
         updateBaseTime(currentTime);
 
         int idx = timeToIndex(currentTime, getBaseTime());
-        if (!checkIdx(idx)) {
+        if (isInvalidIdx(idx)) {
             return;
         }
         synchronized (gLock) {
@@ -121,6 +125,16 @@ public class DataAccumulator<U, T extends AccumulableData<U>> {
         return baseTime > 0L;
     }
 
+    private int timeToIndex(long time, long bound) {
+        long diff = time - bound;
+        if (diff >= Integer.MAX_VALUE || diff < 0) {
+            return -1;
+        } else {
+            diff /= intervalTime;
+        }
+        return (int) diff;
+    }
+
     private DataSnapshot<U, T> getDataSnapshotLocked(int idx) {
         if (!map.containsKey(idx)) {
             map.put(idx, new DataSnapshot<>());
@@ -133,14 +147,15 @@ public class DataAccumulator<U, T extends AccumulableData<U>> {
             return;
         }
         int currentIdx = currentTimeToIdx();
-        if (!checkIdx(currentIdx)) {
+        int backedOffIdx = currentIdx - backOffIdx;
+        if (isInvalidIdx(backedOffIdx)) {
             return;
         }
         synchronized (gLock) {
             if (skipEmpty && !hasDataLocked()) {
                 return;
             }
-            NavigableMap<Integer, DataSnapshot<U, T>> m = detachHead(currentIdx);
+            NavigableMap<Integer, DataSnapshot<U, T>> m = detachHead(backedOffIdx);
             flush(m);
         }
     }
@@ -159,7 +174,7 @@ public class DataAccumulator<U, T extends AccumulableData<U>> {
 
     private NavigableMap<Integer, DataSnapshot<U, T>> detachHead(int bound) {
         synchronized (gLock) {
-            var headView = map.headMap(bound, false);
+            var headView = map.headMap(bound, true);
             var copiedView = genMap(headView);
             headView.clear();
             return copiedView;
@@ -193,20 +208,8 @@ public class DataAccumulator<U, T extends AccumulableData<U>> {
     }
 
     static class Util {
-        static int timeToIndex(long time, long bound) {
-            long diff = msToSec(time - bound);
-            if (diff >= Integer.MAX_VALUE || diff <= Integer.MIN_VALUE) {
-                diff = -1;
-            }
-            return (int) diff;
-        }
-
-        static long msToSec(long ms) {
-            return ms / 1000;
-        }
-
-        static boolean checkIdx(int idx) {
-            return (idx >= 0);
+        static boolean isInvalidIdx(int idx) {
+            return (idx < 0);
         }
 
         private static final boolean DEBUG = false;
