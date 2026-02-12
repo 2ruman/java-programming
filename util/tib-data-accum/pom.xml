@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>truman.java.demo.tb_data_accum</groupId>
-    <artifactId>tb-data-accum</artifactId>
-    <version>0.2.0</version>
+    <artifactId>tib-data-accum</artifactId>
+    <version>0.1.0</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

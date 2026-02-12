@@ -1,4 +1,4 @@
-package truman.java.demo.tb_data_accum.util;
+package truman.java.demo.tib_data_accum.util;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;

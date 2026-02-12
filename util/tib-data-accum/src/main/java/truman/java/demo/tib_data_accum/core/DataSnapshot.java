@@ -1,4 +1,4 @@
-package truman.java.demo.tb_data_accum.core;
+package truman.java.demo.tib_data_accum.core;
 
 import java.util.*;
 

@@ -1,7 +1,7 @@
-package truman.java.demo.tb_data_accum;
+package truman.java.demo.tib_data_accum;
 
-import truman.java.demo.tb_data_accum.core.Accumulable;
-import truman.java.demo.tb_data_accum.core.AccumulableData;
+import truman.java.demo.tib_data_accum.core.Accumulable;
+import truman.java.demo.tib_data_accum.core.AccumulableData;
 
 public class MyData extends AccumulableData<MyUuid> {
 

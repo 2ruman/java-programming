@@ -1,6 +1,6 @@
-package truman.java.demo.tb_data_accum.core;
+package truman.java.demo.tib_data_accum.core;
 
-import static truman.java.demo.tb_data_accum.core.DataAccumulator.Util.*;
+import static truman.java.demo.tib_data_accum.core.DataAccumulator.Util.*;
 
 import java.util.*;
 import java.util.concurrent.Executors;

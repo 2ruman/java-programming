@@ -1,4 +1,4 @@
-package truman.java.demo.tb_data_accum;
+package truman.java.demo.tib_data_accum;
 
 public class MyUuid {
 

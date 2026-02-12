@@ -1,6 +1,6 @@
-package truman.java.demo.tb_data_accum.core;
+package truman.java.demo.tib_data_accum.core;
 
-import truman.java.demo.tb_data_accum.util.AbstractHandlerThread;
+import truman.java.demo.tib_data_accum.util.AbstractHandlerThread;
 
 public class DataFlusher<E> extends AbstractHandlerThread<E> {
 

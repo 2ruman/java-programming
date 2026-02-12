@@ -1,8 +1,8 @@
-package truman.java.demo.tb_data_accum;
+package truman.java.demo.tib_data_accum;
 
-import truman.java.demo.tb_data_accum.core.DataSnapshot;
+import truman.java.demo.tib_data_accum.core.DataSnapshot;
 
-import static truman.java.demo.tb_data_accum.Test.Util.*;
+import static truman.java.demo.tib_data_accum.Test.Util.*;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

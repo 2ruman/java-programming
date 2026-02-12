@@ -1,6 +1,6 @@
-package truman.java.demo.tb_data_accum;
+package truman.java.demo.tib_data_accum;
 
-import truman.java.demo.tb_data_accum.core.DataAccumulator;
+import truman.java.demo.tib_data_accum.core.DataAccumulator;
 
 public class MyDataAccumulator extends DataAccumulator<MyUuid, MyData> {
     public MyDataAccumulator() {
